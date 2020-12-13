@@ -1,0 +1,34 @@
+* {
+}
+
+body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto 1fr auto;
+    grid-template-areas:
+    "header     header"
+    "toolbar    toolbar"
+    "disasm     sidebar"
+    "footer     footer"
+    ;
+}
+
+header {
+    grid-area: header;
+}
+
+.toolbar {
+    grid-area: toolbar;
+}
+
+.disasm {
+    grid-area: disasm;
+}
+
+.sidebar {
+    grid-area: sidebar;
+}
+
+footer {
+    grid-area: footer;
+}
