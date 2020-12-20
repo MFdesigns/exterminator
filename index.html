@@ -5,8 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Exterminator</title>
+    <!-- Stylesheets -->
     <link rel="stylesheet" href="./css/styles.css">
-    <script src="./js/main.js" defer></script>
+    <!-- Scripts -->
+    <script src="./js/App.js" type="module" defer></script>
 </head>
 
 <body>
@@ -23,7 +25,40 @@
     </div>
     <div class="sidebar">
         <h2>Info</h2>
-        <ul class="info"></ul>
+        <h3>Header</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Attribute</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody class="ux-header-body"></tbody>
+        </table>
+        <h3>Section Table</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Permission</th>
+                    <th>Start Address</th>
+                    <th>Size</th>
+                    <th>Section Name Address</th>
+                </tr>
+            </thead>
+            <tbody class="ux-sec-table-body"></tbody>
+        </table>
+        <h3>Section Name Table</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Address</th>
+                    <th>Size</th>
+                    <th>UTF-8 String</th>
+                </tr>
+            </thead>
+            <tbody class="ux-sec-name-table-body"></tbody>
+        </table>
     </div>
 
     <footer>
