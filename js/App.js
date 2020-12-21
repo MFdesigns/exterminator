@@ -15,9 +15,11 @@
 // ======================================================================== //
 
 import { SourceFile } from "./SourceFile.js";
+import { Disassembler } from "./Disassembler.js"
 
 const App = {
     Source: 0,
+    Disasm: 0,
 }
 
 function intToVAddr(int) {
@@ -74,6 +76,14 @@ function displayFileInfo() {
     });
 }
 
+const disasmOutput = document.getElementsByClassName('disasm-output')[0];
+
+function displayDisasm(disasm) {
+    disasm.forEach((line) => {
+        disasmOutput.innerHTML += `<span data-addr="${line.Addr}">${line.Asm}</span></br>`;
+    });
+}
+
 const FILE_INPUT = document.getElementsByClassName('file-input')[0];
 
 FILE_INPUT.addEventListener('change', async () => {
@@ -82,4 +92,8 @@ FILE_INPUT.addEventListener('change', async () => {
 
     App.Source.parse();
     displayFileInfo();
+
+    App.Disasm = new Disassembler(App.Source);
+    App.Disasm.disassemble();
+    displayDisasm(App.Disasm.Disasm);
 });
