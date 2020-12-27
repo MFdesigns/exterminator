@@ -78,3 +78,7 @@ footer {
     border-top: 2px solid #d42020;
     border-bottom: 2px solid #d42020;
 }
+
+.register--changed {
+    color: red;
+}

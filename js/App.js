@@ -17,7 +17,7 @@
 import { SourceFile } from "./SourceFile.js";
 import { Disassembler } from "./Disassembler.js"
 
-export const DebugOperation = {
+const DebugOperation = {
     OPEN_DBG_SESS: 0xD0,
     CLOSE_DBG_SESS: 0xDC,
     NEXT_INSTR: 0xA0,
@@ -25,9 +25,10 @@ export const DebugOperation = {
 }
 
 const RegId = {
-    IP: 0x1,
-    SP: 0x2,
-    BP: 0x3,
+    IP: 1,
+    SP: 2,
+    BP: 3,
+    FL: 4,
 }
 
 class Application {
@@ -76,21 +77,35 @@ class Application {
         const resView = new DataView(regBuffer);
         const regEntrySize = 9;
         let cursor = 9;
+
         regTableBody.innerHTML = '';
+        const frag = document.createDocumentFragment();
         while (cursor < regBuffer.byteLength) {
             const regId = resView.getUint8(cursor);
             const regVal = resView.getBigUint64(cursor + 1, true);
-            regTableBody.innerHTML += `
-            <tr>
-                <td>${regId}</td>
-                <td>0x${regVal.toString(16).padStart(8, '0')}</td>
-            </tr>
-            `;
 
-            this.Registers[regId] = regVal;
+            const tr = document.createElement('tr');
+            const tdId = document.createElement('td');
+            const tdVal = document.createElement('td');
+            tr.appendChild(tdId);
+            tr.appendChild(tdVal);
 
+            tdId.textContent = regId;
+            tdVal.textContent = `0x${regVal.toString(16).padStart(16, '0').toUpperCase()}`;
+
+            if (this.Registers[regId] !== regVal) {
+                this.Registers[regId] = regVal;
+                tr.classList.add('register--changed');
+            }
+
+            if (regId === RegId.FL) {
+                this.setFlags(regVal);
+            }
+
+            frag.appendChild(tr);
             cursor += regEntrySize;
         }
+        regTableBody.appendChild(frag);
     }
 
     async sendOperation(op) {
@@ -198,6 +213,27 @@ class Application {
                 this.handleResponse(regsRes);
             });
         });
+    }
+
+    /**
+     *
+     * @param {BigInteger} flagReg
+     */
+    setFlags(flagReg) {
+        const flagsTableBody = document.getElementsByClassName('flags-table-body')[0];
+        const clearMask = 1;
+        // Extract flag bits
+        const carry = Number(flagReg >> 63n) & clearMask;
+        const zero = Number(flagReg >> 62n) & clearMask;
+        const sign = Number(flagReg >> 61n) & clearMask;
+
+        flagsTableBody.innerHTML = `
+        <tr>
+            <td>${carry}</td>
+            <td>${zero}</td>
+            <td>${sign}</td>
+        </tr>
+        `;
     }
 }
 
