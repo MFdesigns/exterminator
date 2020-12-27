@@ -17,9 +17,205 @@
 import { SourceFile } from "./SourceFile.js";
 import { Disassembler } from "./Disassembler.js"
 
-const App = {
-    Source: 0,
-    Disasm: 0,
+export const DebugOperation = {
+    OPEN_DBG_SESS: 0xD0,
+    CLOSE_DBG_SESS: 0xDC,
+    NEXT_INSTR: 0xA0,
+    GET_REGISTERS: 0xD2,
+}
+
+const RegId = {
+    IP: 0x1,
+    SP: 0x2,
+    BP: 0x3,
+}
+
+class Application {
+    Source = null;
+    Disasm = null;
+
+    static ResponseMagic = 0x4772c3bc657a6921n;
+    static RequestMagic = 0x4772c3bc657a693fn;
+
+    Registers = {};
+    CurrentInstrElem = null;
+
+    constructor() { }
+
+    /**
+     *
+     * @param {File} file
+     */
+    async handleFileUpload(file) {
+        const fileBuffer = await file.arrayBuffer();
+        App.Source = new SourceFile(new Uint8Array(fileBuffer));
+
+        App.Source.parse();
+        displayFileInfo();
+
+        App.Disasm = new Disassembler(App.Source);
+        App.Disasm.disassemble();
+        displayDisasm(App.Disasm.Disasm);
+        App.openSession();
+    }
+
+    updateCurrentInstruction() {
+        if (this.CurrentInstrElem) {
+            this.CurrentInstrElem.classList.toggle('asm-line--active', false);
+        }
+        const ip = Number(this.Registers[RegId.IP]);
+        this.CurrentInstrElem = document.getElementById(`asm-${ip}`);
+        this.CurrentInstrElem.classList.toggle('asm-line--active', true);
+    }
+
+    /**
+     *
+     * @param {ArrayBuffer} regBuffer
+     */
+    updateRegisters(regBuffer) {
+        const resView = new DataView(regBuffer);
+        const regEntrySize = 9;
+        let cursor = 9;
+        regTableBody.innerHTML = '';
+        while (cursor < regBuffer.byteLength) {
+            const regId = resView.getUint8(cursor);
+            const regVal = resView.getBigUint64(cursor + 1, true);
+            regTableBody.innerHTML += `
+            <tr>
+                <td>${regId}</td>
+                <td>0x${regVal.toString(16).padStart(8, '0')}</td>
+            </tr>
+            `;
+
+            this.Registers[regId] = regVal;
+
+            cursor += regEntrySize;
+        }
+    }
+
+    async sendOperation(op) {
+        return new Promise((resolve, reject) => {
+            const magic = 0x4772c3bc657a693fn; // Grüezi?
+
+            const buffSize = 9;
+            const buff = new Uint8Array(buffSize);
+            const view = new DataView(buff.buffer);
+
+            view.setBigUint64(0, magic);
+            view.setUint8(8, op);
+
+            fetch('http://127.0.0.1:2001', {
+                method: 'POST',
+                body: buff
+            }).then((res) => {
+                res.arrayBuffer().then((buff) => {
+                    resolve(buff);
+                })
+            }).catch((err) => {
+                reject(err);
+            })
+        })
+    }
+
+    /**
+     * Handles a HTTP response from the server
+     * @param {ArrayBuffer} res
+     */
+    handleResponse(res) {
+        const resView = new DataView(res);
+
+        // Check if minimal response size is met
+        if (res.byteLength < 9) {
+            console.error("Response does not meet minimal response size to be valid");
+            return;
+        }
+
+        const magic = resView.getBigUint64(0, true);
+
+        if (magic !== Application.ResponseMagic) {
+            console.error("Response is missing magic");
+            return;
+        }
+
+        const resOp = resView.getUint8(8);
+        switch (resOp) {
+            case DebugOperation.GET_REGISTERS:
+            case DebugOperation.NEXT_INSTR:
+                this.updateRegisters(res);
+                this.updateCurrentInstruction();
+                break;
+            case DebugOperation.OPEN_DBG_SESS:
+                setToolbarMode(true);
+                break;
+            case DebugOperation.CLOSE_DBG_SESS:
+                setToolbarMode(false);
+                break;
+            default:
+                console.error("Reponse contains unknown operation code");
+                return;
+                break;
+        }
+    }
+
+    async requestHandshake() {
+        return new Promise((resolve, reject) => {
+            const encoder = new TextEncoder('utf-8');
+            const magic = 0x4772c3bc657a693fn; // Grüezi?
+            const operation = DebugOperation.OPEN_DBG_SESS;
+
+            const filePath = "/tmp/";
+            const filePathSize = filePath.length;
+
+            const buffSize = 8 + 1 + 4 + filePathSize + 4 + App.Source.FileBuffer.length;
+            const buff = new Uint8Array(buffSize);
+            const view = new DataView(buff.buffer);
+
+            view.setBigUint64(0, magic);
+            view.setUint8(8, operation);
+            view.setUint32(9, filePathSize, true);
+            buff.set(encoder.encode(filePath), 13);
+            view.setUint32(13 + filePathSize, App.Source.FileBuffer.length, true);
+            buff.set(App.Source.FileBuffer, 13 + filePathSize + 4);
+
+            fetch('http://127.0.0.1:2001', {
+                method: 'POST',
+                body: buff
+            }).then((res) => {
+                res.arrayBuffer().then((buff) => {
+                    resolve(buff);
+                })
+            }).catch((err) => {
+                reject(err);
+            })
+        });
+    }
+
+    openSession() {
+        this.requestHandshake().then((res) => {
+            // Errors ???
+            this.handleResponse(res);
+            this.sendOperation(DebugOperation.GET_REGISTERS).then((regsRes) => {
+                this.handleResponse(regsRes);
+            });
+        });
+    }
+}
+
+const App = new Application();
+
+const regTableBody = document.getElementsByClassName('reg-table-body')[0];
+const nextBtn = document.getElementsByClassName('next-btn')[0];
+const contBtn = document.getElementsByClassName('cont-btn')[0];
+const stopBtn = document.getElementsByClassName('stop-btn')[0];
+
+function setToolbarMode(state) {
+    if (state) {
+        nextBtn.disabled = false;
+        stopBtn.disabled = false;
+    } else {
+        nextBtn.disabled = true;
+        stopBtn.disabled = true;
+    }
 }
 
 function intToVAddr(int) {
@@ -75,25 +271,31 @@ function displayFileInfo() {
         `;
     });
 }
+// =================== //
+//   EVENT LISTENERS
+// =================== //
 
 const disasmOutput = document.getElementsByClassName('disasm-output')[0];
-
 function displayDisasm(disasm) {
     disasm.forEach((line) => {
-        disasmOutput.innerHTML += `<span data-addr="${line.Addr}">${line.Asm}</span></br>`;
+        disasmOutput.innerHTML += `<span id="asm-${line.Addr}" class="asm-line">${line.Asm}</span>`;
     });
 }
 
-const FILE_INPUT = document.getElementsByClassName('file-input')[0];
+const fileInputElem = document.getElementsByClassName('file-input')[0];
+fileInputElem.addEventListener('change', async () => {
+    const file = fileInputElem.files[0];
+    if (file) {
+        App.handleFileUpload(file);
+    }
+});
 
-FILE_INPUT.addEventListener('change', async () => {
-    const FILE_BUFFER = await FILE_INPUT.files[0].arrayBuffer();
-    App.Source = new SourceFile(new Uint8Array(FILE_BUFFER));
+nextBtn.addEventListener('click', async () => {
+    const regArray = await App.sendOperation(DebugOperation.NEXT_INSTR);
+    App.handleResponse(regArray);
+});
 
-    App.Source.parse();
-    displayFileInfo();
-
-    App.Disasm = new Disassembler(App.Source);
-    App.Disasm.disassemble();
-    displayDisasm(App.Disasm.Disasm);
+stopBtn.addEventListener('click', () => {
+    App.sendOperation(DebugOperation.CLOSE_DBG_SESS);
+    setToolbarMode(false);
 });

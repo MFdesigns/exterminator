@@ -18,6 +18,9 @@
 
     <div class="toolbar">
         <input class="file-input" type="file">
+        <button class="next-btn" disabled>Next</button>
+        <button class="cont-btn" disabled>Continue</button>
+        <button class="stop-btn" disabled>Stop</button>
     </div>
 
     <div class="disasm">
@@ -64,9 +67,16 @@
         </table>
     </div>
 
-    <footer>
-        Copyright &copy; 2020 Michel Fäh
-    </footer>
+    <div class="registers">
+        <h2>Registers</h2>
+        <table class="table">
+            <thead>
+                <th>Id</th>
+                <th>Value</th>
+            </thead>
+            <tbody class="reg-table-body"></tbody>
+        </table>
+    </div>
 </body>
 
 </html>

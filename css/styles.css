@@ -1,18 +1,18 @@
 * {
-    padding: 0;
+   /*  padding: 0;
     margin: 0;
-    box-sizing: border-box;
+    box-sizing: border-box; */
 }
 
 body {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: auto auto minmax(0, 1fr) auto;
     grid-template-areas:
-    "header     header"
-    "toolbar    toolbar"
-    "disasm     sidebar"
-    "footer     footer"
+    "header     header      header"
+    "toolbar    toolbar     toolbar"
+    "disasm     registers   sidebar "
+    "footer     footer      footer"
     ;
     height: 100vh;
 }
@@ -48,6 +48,33 @@ table {
     grid-area: sidebar;
 }
 
+.registers {
+    grid-area: registers;
+}
+
 footer {
     grid-area: footer;
+}
+
+.asm-line {
+    padding: 0 0 0 10px;
+    display: block;
+    position: relative;
+}
+
+.asm-line--active {
+    color: black;
+    font-weight: bold;
+}
+.asm-line--active::before {
+    z-index: -1;
+    content: "";
+    position: absolute;
+    top: -2px;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-color: #ff7070;
+    border-top: 2px solid #d42020;
+    border-bottom: 2px solid #d42020;
 }
