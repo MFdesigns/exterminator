@@ -12,7 +12,7 @@ body {
     "header     header      header"
     "toolbar    toolbar     toolbar"
     "disasm     registers   sidebar "
-    "footer     footer      footer"
+    "console    console     console"
     ;
     height: 100vh;
 }
@@ -50,10 +50,17 @@ table {
 
 .registers {
     grid-area: registers;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(3, auto) 1fr;
 }
 
-footer {
-    grid-area: footer;
+.registers-container {
+    overflow-y: scroll;
+}
+
+.console {
+    grid-area: console;
 }
 
 .asm-line {
@@ -81,4 +88,8 @@ footer {
 
 .register--changed {
     color: red;
+}
+
+.console-output {
+    width: 100%;
 }

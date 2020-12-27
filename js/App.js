@@ -66,7 +66,14 @@ class Application {
         }
         const ip = Number(this.Registers[RegId.IP]);
         this.CurrentInstrElem = document.getElementById(`asm-${ip}`);
+        this.CurrentInstrElem.scrollIntoView(true);
         this.CurrentInstrElem.classList.toggle('asm-line--active', true);
+    }
+
+    consoleOut(buff) {
+        const consoleElem = document.getElementsByClassName('console-output')[0];
+        const decoder = new TextDecoder('utf8');
+        consoleElem.value += decoder.decode(buff);
     }
 
     /**
@@ -155,9 +162,15 @@ class Application {
         const resOp = resView.getUint8(8);
         switch (resOp) {
             case DebugOperation.GET_REGISTERS:
-            case DebugOperation.NEXT_INSTR:
-                this.updateRegisters(res);
+            case DebugOperation.NEXT_INSTR: {
+                // 0x25 regs * 9 bytes (1 byte reg id + 8 byte reg value) * 8 bytes magic + 1 byte op
+                const regBuffSize = 36 * 9 + 9;
+                const regBuffer = res.slice(0, regBuffSize);
+                const consoleBuffer = res.slice(regBuffSize, res.byteLength);
+                this.updateRegisters(regBuffer);
+                this.consoleOut(consoleBuffer);
                 this.updateCurrentInstruction();
+            }
                 break;
             case DebugOperation.OPEN_DBG_SESS:
                 setToolbarMode(true);
