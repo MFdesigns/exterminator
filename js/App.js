@@ -289,8 +289,12 @@ function setToolbarMode(state) {
     }
 }
 
-function intToVAddr(int) {
-    return int.toString(16).toUpperCase().padStart(8, '0');
+/**
+ * Formats an integer to a 64-bit address string
+ * @param {BigInt|Number} int
+ */
+function formatVAddr(int) {
+    return `0x${int.toString(16).toUpperCase().padStart(16, '0')}`;
 }
 
 function displayFileInfo() {
@@ -314,7 +318,7 @@ function displayFileInfo() {
     </tr>
     <tr>
         <td>Start Address</td>
-        <td>0x${intToVAddr(App.Source.StartAddr)}</td>
+        <td>${formatVAddr(App.Source.StartAddr)}</td>
     </tr>
     `;
 
@@ -324,9 +328,9 @@ function displayFileInfo() {
         <tr>
             <td>0x${sec.Type.toString(16).toUpperCase()}</td>
             <td>0x${sec.Perms.toString(16).toUpperCase()}</td>
-            <td>0x${intToVAddr(sec.StartAddr)}</td>
+            <td>${formatVAddr(sec.StartAddr)}</td>
             <td>0x${sec.Size.toString(16).toUpperCase()}</td>
-            <td>0x${intToVAddr(sec.NameAddr)}</td>
+            <td>${formatVAddr(sec.NameAddr)}</td>
         </tr>
         `;
     });
@@ -335,7 +339,7 @@ function displayFileInfo() {
     App.Source.SectionNames.forEach((name) => {
         secNames.innerHTML += `
         <tr>
-            <td>0x${intToVAddr(name.Addr)}</td>
+            <td>${formatVAddr(name.Addr)}</td>
             <td>0x${name.Size.toString(16).toUpperCase()}</td>
             <td>${name.Str}</td>
         </tr>
@@ -358,7 +362,7 @@ function displayDisasm(disasm) {
         asmLine.querySelector('.asm-line').id = `asm-${line.Addr}`;
         asmLine.querySelector('.asm-line__line-number').textContent = i;
         asmLine.querySelector('.asm-line__line-number').style.width = `${maxLineNrWidth}px`;
-        asmLine.querySelector('.asm-line__address').textContent = `0x${intToVAddr(line.Addr)}`;
+        asmLine.querySelector('.asm-line__address').textContent = `${formatVAddr(line.Addr)}`;
         asmLine.querySelector('.asm-line__content').textContent = line.Asm;
         frag.appendChild(asmLine);
     });
