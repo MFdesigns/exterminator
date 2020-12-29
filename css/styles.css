@@ -127,6 +127,10 @@ table {
     color: black;
 }
 
+.register-table {
+    border-spacing: 20px 0;
+}
+
 .register--changed {
     color: red;
 }

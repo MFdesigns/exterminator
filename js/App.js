@@ -88,31 +88,36 @@ class Application {
         const regEntrySize = 9;
         let cursor = 9;
 
-        regTableBody.innerHTML = '';
+        const temp = document.getElementsByClassName('register-template')[0].content;
         const frag = document.createDocumentFragment();
+
+        regTableBody.innerHTML = '';
         while (cursor < regBuffer.byteLength) {
             const regId = resView.getUint8(cursor);
-            const regVal = resView.getBigUint64(cursor + 1, true);
+            const regIntVal = resView.getBigUint64(cursor + 1, true);
+            const regFloatVal = resView.getFloat64(cursor + 1);
 
-            const tr = document.createElement('tr');
-            const tdId = document.createElement('td');
-            const tdVal = document.createElement('td');
-            tr.appendChild(tdId);
-            tr.appendChild(tdVal);
+            const node = temp.cloneNode(true);
 
-            tdId.textContent = regId;
-            tdVal.textContent = `0x${regVal.toString(16).padStart(16, '0').toUpperCase()}`;
+            node.querySelector('.register__id').textContent = formatRegId(regId);
+            node.querySelector('.register__value').textContent = formatVAddr(regIntVal);
 
-            if (this.Registers[regId] !== regVal) {
-                this.Registers[regId] = regVal;
-                tr.classList.add('register--changed');
+            if (this.Registers[regId] !== regIntVal) {
+                this.Registers[regId] = regIntVal;
+                node.querySelector('.register').classList.add('register--changed');
             }
 
             if (regId === RegId.FL) {
-                this.setFlags(regVal);
+                this.setFlags(regIntVal);
             }
 
-            frag.appendChild(tr);
+            if (regId >= 0 && regId <= 0x14) {
+                node.querySelector('.register__typed-value').textContent = regIntVal;
+            } else if (regId >= 0x15 && regId <= 0x24) {
+                node.querySelector('.register__typed-value').textContent = regFloatVal;
+            }
+
+            frag.appendChild(node);
             cursor += regEntrySize;
         }
         regTableBody.appendChild(frag);
@@ -292,9 +297,33 @@ function setToolbarMode(state) {
 /**
  * Formats an integer to a 64-bit address string
  * @param {BigInt|Number} int
+ * @return {String}
  */
 function formatVAddr(int) {
     return `0x${int.toString(16).toUpperCase().padStart(16, '0')}`;
+}
+
+/**
+ * Formats a decimal register id to the corresponding register name
+ * @param {Number} id
+ * @return {String}
+ */
+function formatRegId(id) {
+    let regName = '';
+    if (id === 1) {
+        regName = 'ip';
+    } else if (id === 2) {
+        regName = 'sp';
+    } else if (id === 3) {
+        regName = 'bp';
+    } else if (id === 4) {
+        regName = 'fl';
+    } else if (id >= 0x5 && id <= 0x14) {
+        regName = `r${(id - 0x5).toString(10)}`;
+    } else if (id >= 0x15 && id <= 0x24) {
+        regName = `f${(id - 0x15).toString(10)}`;
+    }
+    return regName;
 }
 
 function displayFileInfo() {

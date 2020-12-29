@@ -81,10 +81,11 @@
             <tbody class="flags-table-body"></tbody>
         </table>
         <div class="registers-container">
-            <table class="table">
+            <table class="register-table table">
                 <thead>
                     <th>Id</th>
                     <th>Value</th>
+                    <th>Typed Value</th>
                 </thead>
                 <tbody class="reg-table-body"></tbody>
             </table>
@@ -104,6 +105,14 @@
         <p class="asm-line__address mono">0x00000000000003F6</p>
         <p class="asm-line__content mono">copy i64 sp, bp</p>
     </div>
+</template>
+
+<template class="register-template">
+    <tr class="register mono">
+        <td class="register__id"></td>
+        <td class="register__value"></td>
+        <td class="register__typed-value"></td>
+    </tr>
 </template>
 
 </html>
