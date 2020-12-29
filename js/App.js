@@ -22,6 +22,8 @@ const DebugOperation = {
     CLOSE_DBG_SESS: 0xDC,
     NEXT_INSTR: 0xA0,
     GET_REGISTERS: 0xD2,
+    SET_BREAKPOINT: 0xB0,
+    REMOVE_BREAKPOINT: 0xB1,
 }
 
 const RegId = {
@@ -32,14 +34,15 @@ const RegId = {
 }
 
 class Application {
-    Source = null;
-    Disasm = null;
 
     static ResponseMagic = 0x4772c3bc657a6921n;
     static RequestMagic = 0x4772c3bc657a693fn;
 
+    Source = null;
+    Disasm = null;
     Registers = {};
     CurrentInstrElem = null;
+    Breakpoints = [];
 
     constructor() { }
 
@@ -248,6 +251,25 @@ class Application {
         </tr>
         `;
     }
+
+    /**
+     * Adds a new breakpoint if it not already exists otherwise removes it
+     * @param {String} breakpointId
+     */
+    toggleBreakpoint(breakpointId) {
+        const buffer = new ArrayBuffer(8);
+        const view = new DataView(buffer);
+        view.setBigUint64(0, BigInt(breakpointId))
+
+        if (this.Breakpoints.includes(breakpointId)) {
+            const bpIndex = this.Breakpoints.indexOf(breakpointId);
+            this.Breakpoints.slice(bpIndex, bpIndex);
+            this.sendOperation(DebugOperation.REMOVE_BREAKPOINT, buffer);
+        } else {
+            this.Breakpoints.push();
+            this.sendOperation(DebugOperation.SET_BREAKPOINT, buffer);
+        }
+    }
 }
 
 const App = new Application();
@@ -326,9 +348,22 @@ function displayFileInfo() {
 
 const disasmOutput = document.getElementsByClassName('disasm-output')[0];
 function displayDisasm(disasm) {
-    disasm.forEach((line) => {
-        disasmOutput.innerHTML += `<span id="asm-${line.Addr}" class="asm-line">${line.Asm}</span>`;
+    const template = document.getElementsByClassName('asm-line-template')[0].content;
+    const frag = document.createDocumentFragment();
+    const maxLineNrWidth = (disasm.length - 1).toString(10).length * 14;
+
+    disasmOutput.innerHTML = '';
+    disasm.forEach((line, i) => {
+        const asmLine = template.cloneNode(true);
+        asmLine.querySelector('.asm-line').id = `asm-${line.Addr}`;
+        asmLine.querySelector('.asm-line__line-number').textContent = i;
+        asmLine.querySelector('.asm-line__line-number').style.width = `${maxLineNrWidth}px`;
+        asmLine.querySelector('.asm-line__address').textContent = `0x${intToVAddr(line.Addr)}`;
+        asmLine.querySelector('.asm-line__content').textContent = line.Asm;
+        frag.appendChild(asmLine);
     });
+
+    disasmOutput.appendChild(frag);
 }
 
 const fileInputElem = document.getElementsByClassName('file-input')[0];
@@ -347,4 +382,11 @@ nextBtn.addEventListener('click', async () => {
 stopBtn.addEventListener('click', () => {
     App.sendOperation(DebugOperation.CLOSE_DBG_SESS);
     setToolbarMode(false);
+});
+
+disasmOutput.addEventListener('click', (event) => {
+    if (event.target.classList.contains('asm-line__breakpoint')) {
+        const id = event.target.parentNode.id;
+        event.target.classList.toggle('asm-line__breakpoint--active');
+    }
 });

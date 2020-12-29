@@ -26,7 +26,21 @@
     <div class="disasm">
         <h2>Disassembly</h2>
         <div class="disasm-container">
-            <p class="disasm-output"></p>
+            <div class="disasm-output">
+                <!-- Generated assembly will be outputed here -->
+                <div class="asm-line" id="lel">
+                    <button class="asm-line__breakpoint"></button>
+                    <p class="asm-line__line-number mono">42</p>
+                    <p class="asm-line__address mono">0x00000000000003F6</p>
+                    <p class="asm-line__content mono">copy i64 sp, bp</p>
+                </div>
+                <div class="asm-line" id="lol">
+                    <button class="asm-line__breakpoint"></button>
+                    <p class="asm-line__line-number mono">42</p>
+                    <p class="asm-line__address mono">0x00000000000003F6</p>
+                    <p class="asm-line__content mono">copy i64 sp, bp</p>
+                </div>
+            </div>
         </div>
     </div>
     <div class="sidebar">
@@ -94,5 +108,14 @@
         <textarea class="console-output" readonly rows="10"></textarea>
     </div>
 </body>
+
+<template class="asm-line-template">
+    <div class="asm-line">
+        <button class="asm-line__breakpoint"></button>
+        <p class="asm-line__line-number mono">42</p>
+        <p class="asm-line__address mono">0x00000000000003F6</p>
+        <p class="asm-line__content mono">copy i64 sp, bp</p>
+    </div>
+</template>
 
 </html>

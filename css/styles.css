@@ -1,7 +1,7 @@
 * {
-   /*  padding: 0;
+    padding: 0;
     margin: 0;
-    box-sizing: border-box; */
+    box-sizing: border-box;
 }
 
 body {
@@ -17,12 +17,18 @@ body {
     height: 100vh;
 }
 
+/* General styles */
+
 header {
     grid-area: header;
 }
 
 table {
     text-align: left;
+}
+
+.mono {
+    font-family: 'Courier New', Courier, monospace;
 }
 
 .toolbar {
@@ -38,10 +44,7 @@ table {
 
 .disasm-container {
     overflow-y: scroll;
-}
-
-.disasm-output {
-    font-family: 'Courier New', Courier, monospace;
+    padding: 0 10px 0 10px;
 }
 
 .sidebar {
@@ -64,26 +67,64 @@ table {
 }
 
 .asm-line {
-    padding: 0 0 0 10px;
-    display: block;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
     position: relative;
 }
-
-.asm-line--active {
-    color: black;
-    font-weight: bold;
+.asm-line--active .asm-line__line-number {
+    background-color: #a14941;
+    color: white;
+}
+.asm-line--active .asm-line__content {
+    color: white;
+}
+.asm-line--active .asm-line__address {
+    color: #ffcfcc;
 }
 .asm-line--active::before {
-    z-index: -1;
     content: "";
     position: absolute;
-    top: -2px;
+    top: 0;
     left: 0;
     height: 100%;
     width: 100%;
-    background-color: #ff7070;
-    border-top: 2px solid #d42020;
-    border-bottom: 2px solid #d42020;
+    border-radius: 20px;
+    background-color: #f0675e;
+    z-index: -1;
+}
+
+.asm-line__breakpoint {
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    border: 2px solid #a82016;
+    background-color: #e32d20;
+    opacity: 0;
+    margin: 0 5px 0 10px;
+}
+.asm-line__breakpoint--active {
+    opacity: 1;
+}
+.asm-line__breakpoint:hover {
+    opacity: 1;
+    cursor: pointer;
+}
+
+.asm-line__line-number {
+    background-color: #e8e8e8;
+    padding: 0 5px 0 5px;
+    margin: 0 5px 0 0;
+    text-align: end;
+}
+
+.asm-line__address {
+    margin: 0 10px 0 0;
+    color: #9e9e9e;
+}
+
+.asm-line__content {
+    color: black;
 }
 
 .register--changed {
