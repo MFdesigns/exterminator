@@ -21,6 +21,7 @@ const DebugOperation = {
     OPEN_DBG_SESS: 0xD0,
     CLOSE_DBG_SESS: 0xDC,
     NEXT_INSTR: 0xA0,
+    CONTINUE: 0xA1,
     GET_REGISTERS: 0xD2,
     SET_BREAKPOINT: 0xB0,
     REMOVE_BREAKPOINT: 0xB1,
@@ -123,12 +124,27 @@ class Application {
         regTableBody.appendChild(frag);
     }
 
-    async sendOperation(op) {
+    /**
+     * Sends an operation to the debug server
+     * @param {DebugOperation} op
+     * @param {ArrayBuffer|null} body
+     * @return {Promise}
+     */
+    async sendOperation(op, body) {
         return new Promise((resolve, reject) => {
             const magic = 0x4772c3bc657a693fn; // Grüezi?
 
-            const buffSize = 9;
+            let buffSize = 9;
+            // If body is given add its size to the total buffer size
+            if (body) {
+                buffSize += body.byteLength;
+            }
+            // If body is given copy its content to the request body buffer
             const buff = new Uint8Array(buffSize);
+            if (body) {
+                const tmpBuff = new Uint8Array(body);
+                buff.set(tmpBuff, 9);
+            }
             const view = new DataView(buff.buffer);
 
             view.setBigUint64(0, magic);
@@ -185,6 +201,14 @@ class Application {
                 break;
             case DebugOperation.CLOSE_DBG_SESS:
                 setToolbarMode(false);
+                break;
+            case DebugOperation.CONTINUE:
+                const regBuffSize = 36 * 9 + 9;
+                const regBuffer = res.slice(0, regBuffSize);
+                const consoleBuffer = res.slice(regBuffSize, res.byteLength);
+                this.updateRegisters(regBuffer);
+                this.consoleOut(consoleBuffer);
+                this.updateCurrentInstruction();
                 break;
             default:
                 console.error("Reponse contains unknown operation code");
@@ -262,16 +286,17 @@ class Application {
      * @param {String} breakpointId
      */
     toggleBreakpoint(breakpointId) {
+        const bpAddr = BigInt(breakpointId.replace('asm-', ''));
         const buffer = new ArrayBuffer(8);
         const view = new DataView(buffer);
-        view.setBigUint64(0, BigInt(breakpointId))
+        view.setBigUint64(0, bpAddr, true);
 
-        if (this.Breakpoints.includes(breakpointId)) {
-            const bpIndex = this.Breakpoints.indexOf(breakpointId);
-            this.Breakpoints.slice(bpIndex, bpIndex);
+        if (this.Breakpoints.includes(bpAddr)) {
+            const bpIndex = this.Breakpoints.indexOf(bpAddr);
+            this.Breakpoints.splice(bpIndex, 1);
             this.sendOperation(DebugOperation.REMOVE_BREAKPOINT, buffer);
         } else {
-            this.Breakpoints.push();
+            this.Breakpoints.push(bpAddr);
             this.sendOperation(DebugOperation.SET_BREAKPOINT, buffer);
         }
     }
@@ -288,9 +313,11 @@ function setToolbarMode(state) {
     if (state) {
         nextBtn.disabled = false;
         stopBtn.disabled = false;
+        contBtn.disabled = false;
     } else {
         nextBtn.disabled = true;
         stopBtn.disabled = true;
+        contBtn.disabled = true;
     }
 }
 
@@ -417,9 +444,16 @@ stopBtn.addEventListener('click', () => {
     setToolbarMode(false);
 });
 
+contBtn.addEventListener('click', () => {
+    App.sendOperation(DebugOperation.CONTINUE).then((res) => {
+        App.handleResponse(res);
+    });
+});
+
 disasmOutput.addEventListener('click', (event) => {
     if (event.target.classList.contains('asm-line__breakpoint')) {
         const id = event.target.parentNode.id;
         event.target.classList.toggle('asm-line__breakpoint--active');
+        App.toggleBreakpoint(id);
     }
 });
