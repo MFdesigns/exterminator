@@ -64,7 +64,7 @@ class SourceFile {
 
         // Parse section table
         this.SecTableSize = view.getUint32(0x60, true);
-        const secTableEntrySize = 0x1A
+        const secTableEntrySize = 0x16
         const secTableEntryCount = this.SecTableSize / secTableEntrySize;
 
         let cursor = 0x64;
@@ -73,8 +73,8 @@ class SourceFile {
             const type = this.FileBuffer[cursor];
             const perms = this.FileBuffer[cursor + 1];
             const startAddr = view.getBigUint64(cursor + 2, true);
-            const size = view.getBigUint64(cursor + 0x0A, true);
-            const nameIndex = view.getBigUint64(cursor + 0x12, true);
+            const size = view.getUint32(cursor + 0x0A, true);
+            const nameIndex = view.getBigUint64(cursor + 0x0E, true);
 
             if (type == 1) {
                 secNameTableSize = size;
