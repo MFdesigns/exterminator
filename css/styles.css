@@ -1,8 +1,101 @@
+@font-face {
+    src: url('../res/aileron_regular.otf');
+    font-family: 'Aileron';
+    font-weight: normal;
+}
+@font-face {
+    src: url('../res/aileron_bold.otf');
+    font-family: 'Aileron';
+    font-weight: bold;
+}
+@font-face {
+    src: url('../res/aileron_black.otf');
+    font-family: 'Aileron';
+    font-weight: bolder;
+}
+
+@font-face {
+    src: url('../res/jet_brains_mono_nl_regular.ttf');
+    font-family: 'JetBrainsMono';
+    font-weight: normal;
+}
+
 * {
     padding: 0;
     margin: 0;
     box-sizing: border-box;
 }
+
+:root {
+    --accent-color: #006DF6;
+    --darker-accent-color: #0047A0;
+}
+
+/* General styles */
+
+html {
+    font-family: 'Aileron';
+}
+
+.btn:hover {
+    cursor: pointer;
+}
+
+/* Header */
+
+header {
+    background-color: var(--accent-color);
+    display: grid;
+    grid-template-rows: auto;
+    grid-template-columns: auto auto 1fr;
+    align-items: center;
+}
+
+.header__title {
+    font-size: 18px;
+    font-weight: bolder;
+    color: white;
+    padding: 10px;
+    opacity: 0.8;
+    margin: 0 20px 0 0;
+}
+
+.nav__btn {
+    font-size: 15px;
+    font-weight: bold;
+    color: white;
+    background-color: var(--darker-accent-color);
+    padding: 10px 20px 10px 20px;
+    margin: 10px 10px 10px 0;
+    border: none;
+    border-radius: 5px;
+}
+.nav__btn--active {
+    color: black;
+    background-color: white;
+    margin: 10px 10px 0 0;
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+    border-bottom: 10px solid white;
+}
+
+.upload-btn {
+    background-color: var(--darker-accent-color);
+    padding: 5px 20px 5px 20px;
+    margin: 5px 10px 5px 10px;
+    border: none;
+    border-radius: 5px;
+    justify-self: end;
+}
+
+.upload-btn__img {
+    height: 25px;
+    width: 25px;
+    filter: invert(100%);
+}
+
 
 body {
     display: grid;

@@ -426,9 +426,9 @@ function displayDisasm(disasm) {
     disasmOutput.appendChild(frag);
 }
 
-const fileInputElem = document.getElementsByClassName('file-input')[0];
-fileInputElem.addEventListener('change', async () => {
-    const file = fileInputElem.files[0];
+const fileUploadBtn = document.getElementsByClassName('upload-btn')[0];
+fileUploadBtn.addEventListener('change', async () => {
+    const file = fileUploadBtn.files[0];
     if (file) {
         App.handleFileUpload(file);
     }

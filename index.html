@@ -13,11 +13,19 @@
 
 <body>
     <header>
-        <h1>Exterminator</h1>
+        <h1 class="header__title">Exterminator</h1>
+        <nav>
+            <button class="btn nav__btn nav__btn--active">Debugger</button>
+            <button class="btn nav__btn">File Info</button>
+        </nav>
+        <input class="btn upload-btn" type="file">
+        <!-- Once File API is available this upload button can be used -->
+        <!-- <button class="btn upload-btn">
+            <img src="./res/icons/upload_icon.svg" alt="Upload icon" class="upload-btn__img">
+        </button> -->
     </header>
 
     <div class="toolbar">
-        <input class="file-input" type="file">
         <button class="next-btn" disabled>Next</button>
         <button class="cont-btn" disabled>Continue</button>
         <button class="stop-btn" disabled>Stop</button>
