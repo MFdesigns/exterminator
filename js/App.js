@@ -410,15 +410,18 @@ const disasmOutput = document.getElementsByClassName('disasm-output')[0];
 function displayDisasm(disasm) {
     const template = document.getElementsByClassName('asm-line-template')[0].content;
     const frag = document.createDocumentFragment();
-    const maxLineNrWidth = (disasm.length - 1).toString(10).length * 14;
+    const maxLineNumberWidth = disasm.length.toString(10).length * 20;
+    const maxAddrLineWidth = disasm[disasm.length - 1].Addr.toString(16).length;
 
     disasmOutput.innerHTML = '';
     disasm.forEach((line, i) => {
         const asmLine = template.cloneNode(true);
+        const addr = line.Addr.toString(16).padStart(maxAddrLineWidth, '0');
+
         asmLine.querySelector('.asm-line').id = `asm-${line.Addr}`;
-        asmLine.querySelector('.asm-line__line-number').textContent = i;
-        asmLine.querySelector('.asm-line__line-number').style.width = `${maxLineNrWidth}px`;
-        asmLine.querySelector('.asm-line__address').textContent = `${formatVAddr(line.Addr)}`;
+        asmLine.querySelector('.asm-line__line-number').textContent = i + 1;
+        asmLine.querySelector('.asm-line__line-number').style.width = `${maxLineNumberWidth}px`;
+        asmLine.querySelector('.asm-line__address').textContent = `0x${addr}`;
         asmLine.querySelector('.asm-line__content').textContent = line.Asm;
         frag.appendChild(asmLine);
     });

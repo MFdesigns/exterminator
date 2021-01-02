@@ -29,6 +29,11 @@
 :root {
     --accent-color: #006DF6;
     --darker-accent-color: #0047A0;
+    --off-white: #F5F5F5;
+    --grey: #C7C7C7;
+    --red: #FF5B5B;
+    --dark-red: #9C0008;
+    --light-red: #E00000;
 }
 
 /* General styles */
@@ -37,8 +42,24 @@ html {
     font-family: 'Aileron';
 }
 
+header {
+    grid-area: header;
+}
+
 .btn:hover {
     cursor: pointer;
+}
+
+
+table {
+    text-align: left;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.mono {
+    font-family: 'JetBrainsMono';
+    font-size: 16px;
 }
 
 /* Header */
@@ -96,7 +117,6 @@ header {
     filter: invert(100%);
 }
 
-
 body {
     display: grid;
     grid-template-columns: 1fr;
@@ -108,98 +128,88 @@ body {
     height: 100vh;
 }
 
+main {
+    height: 100%;
+    width: 100%;
+}
+
 .page {
     display: none;
+    height: 100%;
+    width: 100%;
+    padding: 10px;
 }
 .page--active {
     display: block;
 }
 
-/* General styles */
-
-header {
-    grid-area: header;
+.page-debugger {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: minmax(0, 2fr) minmax(0, 1fr);
+    grid-template-areas:
+    "disassembly registers"
+    "console console"
+    ;
+    gap: 10px;
 }
 
-table {
-    text-align: left;
-}
-
-.mono {
-    font-family: 'Courier New', Courier, monospace;
-}
-
-.toolbar {
-    grid-area: toolbar;
-}
-
-.disasm {
+.section {
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr;
-    grid-area: disasm;
+    grid-template-rows: auto minmax(0, 1fr);
+    background-color: var(--off-white);
+    border-radius: 5px;
+    padding: 10px;
 }
 
-.disasm-container {
+.section__title {
+    font-size: 18px;
+    font-weight: bolder;
+    margin: 0 0 10px 0;
+}
+
+.section__body--overflow {
     overflow-y: scroll;
-    padding: 0 10px 0 10px;
+    border-top: 1px solid var(--grey);
+    border-bottom: 1px solid var(--grey);
 }
 
-.sidebar {
-    grid-area: sidebar;
+.sec-disasm {
+    grid-area: disassembly;
 }
-
-.registers {
+.sec-registers {
     grid-area: registers;
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: repeat(3, auto) 1fr;
 }
-
-.registers-container {
-    overflow-y: scroll;
-}
-
-.console {
+.sec-console {
     grid-area: console;
 }
+
+/* Disassembly */
 
 .asm-line {
     display: flex;
     flex-direction: row;
     align-items: center;
-    position: relative;
 }
-.asm-line--active .asm-line__line-number {
-    background-color: #a14941;
-    color: white;
-}
-.asm-line--active .asm-line__content {
-    color: white;
+.asm-line--active {
+    background-color: var(--red);
 }
 .asm-line--active .asm-line__address {
-    color: #ffcfcc;
+    color: var(--dark-red);
 }
-.asm-line--active::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-    border-radius: 20px;
-    background-color: #f0675e;
-    z-index: -1;
+.asm-line--active .asm-line__breakpoint {
+    background-color: black;
+    border-color: black;
 }
 
 .asm-line__breakpoint {
     height: 16px;
     width: 16px;
     border-radius: 50%;
-    border: 2px solid #a82016;
-    background-color: #e32d20;
+    border: 2px solid var(--light-red);
+    background-color: var(--red);
     opacity: 0;
-    margin: 0 5px 0 10px;
 }
 .asm-line__breakpoint--active {
     opacity: 1;
@@ -210,23 +220,13 @@ table {
 }
 
 .asm-line__line-number {
-    background-color: #e8e8e8;
-    padding: 0 5px 0 5px;
-    margin: 0 5px 0 0;
+    padding: 0 20px 0 5px;
     text-align: end;
 }
 
 .asm-line__address {
-    margin: 0 10px 0 0;
-    color: #9e9e9e;
-}
-
-.asm-line__content {
-    color: black;
-}
-
-.register-table {
-    border-spacing: 20px 0;
+    padding: 0 20px 0 0;
+    color: var(--grey);
 }
 
 .register--changed {
