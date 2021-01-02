@@ -15,8 +15,8 @@
     <header>
         <h1 class="header__title">Exterminator</h1>
         <nav>
-            <button class="btn nav__btn nav__btn--active">Debugger</button>
-            <button class="btn nav__btn">File Info</button>
+            <button class="btn nav__btn nav__btn--active" data-page="debugger">Debugger</button>
+            <button class="btn nav__btn" data-page="file-info">File Info</button>
         </nav>
         <input class="btn upload-btn" type="file">
         <!-- Once File API is available this upload button can be used -->
@@ -25,85 +25,96 @@
         </button> -->
     </header>
 
-    <div class="toolbar">
-        <button class="next-btn" disabled>Next</button>
-        <button class="cont-btn" disabled>Continue</button>
-        <button class="stop-btn" disabled>Stop</button>
-    </div>
+    <main>
+        <!-- Debugger -->
+        <div class="page page--active" data-page="debugger">
+            <div class="toolbar">
+                <button class="next-btn" disabled>Next</button>
+                <button class="cont-btn" disabled>Continue</button>
+                <button class="stop-btn" disabled>Stop</button>
+            </div>
 
-    <div class="disasm">
-        <h2>Disassembly</h2>
-        <div class="disasm-container">
-            <div class="disasm-output">
-                <!-- Generated assembly will be outputed here -->
+            <div class="disasm">
+                <h2>Disassembly</h2>
+                <div class="disasm-container">
+                    <div class="disasm-output">
+                        <!-- Generated assembly will be outputed here -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="registers">
+                <h2>Registers</h2>
+                <h3>Flags</h3>
+                <table class="table">
+                    <thead>
+                        <th>Carry</th>
+                        <th>Zero</th>
+                        <th>Sign</th>
+                    </thead>
+                    <tbody class="flags-table-body"></tbody>
+                </table>
+                <div class="registers-container">
+                    <table class="register-table table">
+                        <thead>
+                            <th>Id</th>
+                            <th>Value</th>
+                            <th>Typed Value</th>
+                        </thead>
+                        <tbody class="reg-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="console">
+                <h2>Console</h2>
+                <textarea class="console-output" readonly rows="10"></textarea>
             </div>
         </div>
-    </div>
-    <div class="sidebar">
-        <h2>Info</h2>
-        <h3>Header</h3>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Attribute</th>
-                    <th>Value</th>
-                </tr>
-            </thead>
-            <tbody class="ux-header-body"></tbody>
-        </table>
-        <h3>Section Table</h3>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Type</th>
-                    <th>Permission</th>
-                    <th>Start Address</th>
-                    <th>Size</th>
-                    <th>Section Name Address</th>
-                </tr>
-            </thead>
-            <tbody class="ux-sec-table-body"></tbody>
-        </table>
-        <h3>Section Name Table</h3>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Address</th>
-                    <th>Size</th>
-                    <th>UTF-8 String</th>
-                </tr>
-            </thead>
-            <tbody class="ux-sec-name-table-body"></tbody>
-        </table>
-    </div>
 
-    <div class="registers">
-        <h2>Registers</h2>
-        <h3>Flags</h3>
-        <table class="table">
-            <thead>
-                <th>Carry</th>
-                <th>Zero</th>
-                <th>Sign</th>
-            </thead>
-            <tbody class="flags-table-body"></tbody>
-        </table>
-        <div class="registers-container">
-            <table class="register-table table">
-                <thead>
-                    <th>Id</th>
-                    <th>Value</th>
-                    <th>Typed Value</th>
-                </thead>
-                <tbody class="reg-table-body"></tbody>
-            </table>
+        <!-- File Info -->
+        <div class="page" data-page="file-info">
+            <div class="sidebar">
+                <h2>Info</h2>
+                <h3>Header</h3>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Attribute</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody class="ux-header-body"></tbody>
+                </table>
+                <h3>Section Table</h3>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Permission</th>
+                            <th>Start Address</th>
+                            <th>Size</th>
+                            <th>Section Name Address</th>
+                        </tr>
+                    </thead>
+                    <tbody class="ux-sec-table-body"></tbody>
+                </table>
+                <h3>Section Name Table</h3>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Address</th>
+                            <th>Size</th>
+                            <th>UTF-8 String</th>
+                        </tr>
+                    </thead>
+                    <tbody class="ux-sec-name-table-body"></tbody>
+                </table>
+            </div>
         </div>
-    </div>
+    </main>
 
-    <div class="console">
-        <h2>Console</h2>
-        <textarea class="console-output" readonly rows="10"></textarea>
-    </div>
+
 </body>
 
 <template class="asm-line-template">

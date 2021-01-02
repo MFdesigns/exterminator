@@ -99,15 +99,20 @@ header {
 
 body {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: auto auto minmax(0, 1fr) auto;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(0, 1fr);
     grid-template-areas:
-    "header     header      header"
-    "toolbar    toolbar     toolbar"
-    "disasm     registers   sidebar "
-    "console    console     console"
+    "header"
+    "main"
     ;
     height: 100vh;
+}
+
+.page {
+    display: none;
+}
+.page--active {
+    display: block;
 }
 
 /* General styles */
