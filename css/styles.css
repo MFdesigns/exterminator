@@ -62,11 +62,10 @@ html {
     width: 25px;
 }
 
-
 table {
     text-align: left;
-    border-collapse: collapse;
-    width: 100%;
+    border-collapse: separate;
+    border-spacing: 10px;
 }
 
 .mono {
@@ -152,11 +151,10 @@ main {
     padding: 10px;
 }
 .page--active {
-    display: block;
+    display: grid;
 }
 
 .page-debugger {
-    display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto minmax(0, 2fr) minmax(0, 1fr);
     grid-template-areas:
@@ -201,7 +199,11 @@ main {
     grid-area: disassembly;
 }
 .sec-registers {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto minmax(0, 1fr);
     grid-area: registers;
+    row-gap: 10px;
 }
 .sec-console {
     grid-area: console;
