@@ -42,12 +42,24 @@ html {
     font-family: 'Aileron';
 }
 
-header {
-    grid-area: header;
-}
-
 .btn:hover {
     cursor: pointer;
+}
+
+.icon-btn {
+    border: none;
+    border-radius: 5px;
+    background-color: var(--grey);
+    padding: 3px 5px 3px 5px;
+    margin: 0 5px 0 0;
+}
+.icon-btn:disabled {
+    filter: grayscale(100%);
+}
+
+.icon-btn__img {
+    height: 25px;
+    width: 25px;
 }
 
 
@@ -62,13 +74,25 @@ table {
     font-size: 16px;
 }
 
+body {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(0, 1fr);
+    grid-template-areas:
+    "header"
+    "main"
+    ;
+    height: 100vh;
+}
+
+
 /* Header */
 
 header {
+    grid-area: header;
     background-color: var(--accent-color);
-    display: grid;
-    grid-template-rows: auto;
-    grid-template-columns: auto auto 1fr;
+    display: flex;
+    flex-direction: row;
     align-items: center;
 }
 
@@ -103,29 +127,17 @@ header {
 }
 
 .upload-btn {
-    background-color: var(--darker-accent-color);
     padding: 5px 20px 5px 20px;
     margin: 5px 10px 5px 10px;
     border: none;
     border-radius: 5px;
-    justify-self: end;
+    background-color: var(--grey);
 }
 
 .upload-btn__img {
     height: 25px;
     width: 25px;
     filter: invert(100%);
-}
-
-body {
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: auto minmax(0, 1fr);
-    grid-template-areas:
-    "header"
-    "main"
-    ;
-    height: 100vh;
 }
 
 main {
@@ -146,10 +158,11 @@ main {
 .page-debugger {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: minmax(0, 2fr) minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 2fr) minmax(0, 1fr);
     grid-template-areas:
-    "disassembly registers"
-    "console console"
+    "toolbar        toolbar"
+    "disassembly    registers"
+    "console        console"
     ;
     gap: 10px;
 }
@@ -161,6 +174,9 @@ main {
     background-color: var(--off-white);
     border-radius: 5px;
     padding: 10px;
+}
+.section--simple {
+    display: block;
 }
 
 .section__title {
@@ -175,6 +191,12 @@ main {
     border-bottom: 1px solid var(--grey);
 }
 
+.sec-toolbar {
+    grid-area: toolbar;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
 .sec-disasm {
     grid-area: disassembly;
 }

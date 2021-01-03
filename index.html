@@ -18,16 +18,31 @@
             <button class="btn nav__btn nav__btn--active" data-page="debugger">Debugger</button>
             <button class="btn nav__btn" data-page="file-info">File Info</button>
         </nav>
-        <input class="btn upload-btn" type="file">
-        <!-- Once File API is available this upload button can be used -->
-        <!-- <button class="btn upload-btn">
-            <img src="./res/icons/upload_icon.svg" alt="Upload icon" class="upload-btn__img">
-        </button> -->
     </header>
 
     <main>
         <!-- Debugger -->
         <div class="page page--active page-debugger" data-page="debugger">
+            <div class="section section--simple sec-toolbar">
+                <input class="btn upload-btn" type="file">
+                <!-- Once File API is available this upload button can be used -->
+                <!-- <button class="btn upload-btn">
+                            <img src="./res/icons/upload_icon.svg" alt="Upload icon" class="upload-btn__img">
+                        </button> -->
+                <button class="btn icon-btn start-btn" title="Run Application" disabled>
+                    <img class="icon-btn__img" src="./res/icons/start_icon.svg" alt="Play icon">
+                </button>
+                <button class="btn icon-btn next-btn" title="Next Line" disabled>
+                    <img class="icon-btn__img" src="./res/icons/arrow_right_icon.svg" alt="Arrow to the right">
+                </button>
+                <button class="btn icon-btn cont-btn" title="Continue" disabled>
+                    <img class="icon-btn__img" src="./res/icons/continue_icon.svg" alt="Skip icon">
+                </button>
+                <button class="btn icon-btn stop-btn" title="Stop" disabled>
+                    <img class="icon-btn__img" src="./res/icons/stop_icon.svg" alt="Stop icon">
+                </button>
+            </div>
+
             <div class="section sec-disasm">
                 <h2 class="section__title">Disassembly</h2>
                 <div class="section__body section__body--overflow">
@@ -65,9 +80,6 @@
             <div class="section sec-console">
                 <h2 class="section__title">Console</h2>
                 <textarea class="console-output" readonly rows="10"></textarea>
-                <button class="next-btn" disabled>Next</button>
-                <button class="cont-btn" disabled>Continue</button>
-                <button class="stop-btn" disabled>Stop</button>
             </div>
         </div>
 
