@@ -39,6 +39,15 @@ const RegId = {
     FL: 4,
 }
 
+const ErrorCodes = {
+    0x1: 'ALREADY_IN_DEBUG_SESSION',
+    0x2: 'NOT_IN_DEBUG_SESSION',
+    0x3: 'RUNTIME_ERROR',
+    0x4: 'FILE_FORMAT_ERROR',
+    0x5: 'BREAKPOINT_ALREADY_SET',
+    0x6: 'BREAKPOINT_NOT_EXISTING',
+}
+
 /**
  * Outputs a message to the debug console
  * @param {String} msg
@@ -113,7 +122,9 @@ class Application {
      */
     closeSession() {
         if (this.#SessOpen) {
-            this.sendOperation(DebugOperation.CLOSE_DBG_SESS, null);
+            this.sendOperation(DebugOperation.CLOSE_DBG_SESS, null).then((res) => {
+                this.handleResponse(res);
+            });
             debugConsole('Closed debug session');
         }
     }
@@ -253,9 +264,16 @@ class Application {
         }
 
         const resOp = resView.getUint8(8);
+
+
         switch (resOp) {
-            case DebugOperation.GET_REGISTERS:
-            case DebugOperation.NEXT_INSTR: {
+            case DebugOperation.DBG_ERROR: {
+                const error = ErrorCodes[resView.getUint8(9)];
+                debugConsole(`Response error: ${error}`);
+            }
+                break;
+            case DebugOperation.DBG_GET_REGS:
+            case DebugOperation.DBG_NEXT_INSTR: {
                 // 0x25 regs * 9 bytes (1 byte reg id + 8 byte reg value) * 8 bytes magic + 1 byte op
                 const regBuffSize = 36 * 9 + 9;
                 const regBuffer = res.slice(0, regBuffSize);
@@ -265,13 +283,13 @@ class Application {
                 this.updateCurrentInstruction();
             }
                 break;
-            case DebugOperation.OPEN_DBG_SESS:
+            case DebugOperation.DBG_OPEN_DBG_SESS:
                 setToolbarMode(true);
                 break;
-            case DebugOperation.CLOSE_DBG_SESS:
+            case DebugOperation.DBG_CLOSE_DBG_SESS:
                 setToolbarMode(false);
                 break;
-            case DebugOperation.CONTINUE:
+            case DebugOperation.DBG_CONTINUE_:
                 const regBuffSize = 36 * 9 + 9;
                 const regBuffer = res.slice(0, regBuffSize);
                 const consoleBuffer = res.slice(regBuffSize, res.byteLength);
