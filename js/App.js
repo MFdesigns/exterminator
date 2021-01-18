@@ -62,6 +62,8 @@ const UIState = {
     CLOSED_SES: 0,
     OPEN_SESS: 1,
     APP_RUNNING: 2,
+    FILE_SELECTED: 3,
+    APP_STOPED: 4,
 }
 
 /**
@@ -79,6 +81,18 @@ function setUIState(state) {
             contBtn.disabled = true;
             break;
         case UIState.OPEN_SESS:
+            closeDbgSessBtn.disabled = false;
+            fileUploadBtn.disabled = false;
+            startBtn.disabled = true;
+            stopBtn.disabled = true;
+            nextBtn.disabled = true;
+            contBtn.disabled = true;
+
+            if (Dbg.CurrentInstrElem) {
+                Dbg.CurrentInstrElem.classList.toggle('asm-line--active', false);
+            }
+            break;
+        case UIState.FILE_SELECTED:
             closeDbgSessBtn.disabled = false;
             fileUploadBtn.disabled = false;
             startBtn.disabled = false;
@@ -282,6 +296,7 @@ class Debugger {
         Dbg.Disasm = new Disassembler(Dbg.Source);
         Dbg.Disasm.disassemble();
         displayDisasm(Dbg.Disasm.Disasm);
+        setUIState(UIState.FILE_SELECTED);
     }
 
     updateCurrentInstruction() {
@@ -427,7 +442,7 @@ class Debugger {
                 this.updateCurrentInstruction();
 
                 if (resOp === DebugOperation.DBG_EXE_FIN) {
-                    setUIState(UIState.OPEN_SESS);
+                    setUIState(UIState.FILE_SELECTED);
                     debugConsole('Finished execution');
                 }
             }
@@ -536,7 +551,7 @@ nextBtn.addEventListener('click', async () => {
 
 stopBtn.addEventListener('click', () => {
     Dbg.sendOperation(DebugOperation.DBG_STOP_EXE);
-    setUIState(UIState.OPEN_SESS);
+    setUIState(UIState.FILE_SELECTED);
 });
 
 contBtn.addEventListener('click', () => {
