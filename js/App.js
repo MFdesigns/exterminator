@@ -18,8 +18,6 @@ import { SourceFile } from "./SourceFile.js";
 import { Disassembler } from "./Disassembler.js"
 
 const DebugOperation = {
-    OPEN_DBG_SESS: 0x01,
-    CLOSE_DBG_SESS: 0x02,
     DBG_OPEN_DBG_SESS: 0x01,
     DBG_CLOSE_DBG_SESS: 0x02,
     DBG_SET_BREAKPNT: 0xB0,
@@ -242,7 +240,7 @@ class Debugger {
         if (!this.#SessOpen) {
             debugConsole('Trying to open debug session...');
             try {
-                const op = await this.sendOperation(DebugOperation.OPEN_DBG_SESS, null);
+                const op = await this.sendOperation(DebugOperation.DBG_OPEN_DBG_SESS, null);
                 this.handleResponse(op);
             } catch (err) {
                 console.log(err);
@@ -259,7 +257,7 @@ class Debugger {
      */
     closeSession() {
         if (this.#SessOpen) {
-            this.sendOperation(DebugOperation.CLOSE_DBG_SESS, null).then((res) => {
+            this.sendOperation(DebugOperation.DBG_CLOSE_DBG_SESS, null).then((res) => {
                 this.handleResponse(res);
             });
             debugConsole('Closed debug session');
