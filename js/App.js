@@ -18,13 +18,18 @@ import { SourceFile } from "./SourceFile.js";
 import { Disassembler } from "./Disassembler.js"
 
 const DebugOperation = {
-    OPEN_DBG_SESS: 0xD0,
-    CLOSE_DBG_SESS: 0xDC,
-    NEXT_INSTR: 0xA0,
-    CONTINUE: 0xA1,
-    GET_REGISTERS: 0xD2,
-    SET_BREAKPOINT: 0xB0,
-    REMOVE_BREAKPOINT: 0xB1,
+    OPEN_DBG_SESS: 0x01,
+    CLOSE_DBG_SESS: 0x02,
+    DBG_OPEN_DBG_SESS: 0x01,
+    DBG_CLOSE_DBG_SESS: 0x02,
+    DBG_SET_BREAKPNT: 0xB0,
+    DBG_REMOVE_BREAKPNT: 0xB1,
+    DBG_RUN_APP: 0xE0,
+    DBG_NEXT_INSTR: 0xE1,
+    DBG_CONTINUE_: 0xE2,
+    DBG_GET_REGS: 0x10,
+    DBG_ERROR: 0xEE,
+    DBG_EXE_FIN: 0xFF,
 }
 
 const RegId = {
@@ -44,8 +49,62 @@ class Application {
     Registers = {};
     CurrentInstrElem = null;
     Breakpoints = [];
+    #SessOpen = false;
 
-    constructor() { }
+    constructor() {
+        this.openSession();
+    }
+
+    /**
+     * Tries to open a debug session until successful
+     */
+    async openSession() {
+        if (!this.#SessOpen) {
+            console.log('Trying to open debug session...');
+            const data = new Uint8Array(9);
+            const view = new DataView(data.buffer);
+            view.setBigUint64(0, Application.RequestMagic);
+            view.setUint8(8, DebugOperation.OPEN_DBG_SESS);
+
+            try {
+                const req = await fetch('http://127.0.0.1:2001', {
+                    method: 'POST',
+                    body: data,
+                })
+                const buff = await req.arrayBuffer();
+                const view = new DataView(buff);
+
+                if (view.byteLength === 9) {
+                    if (view.getBigUint64(0, true) !== Application.ResponseMagic) {
+                        console.log('Unexpected response magic when trying to open debug session');
+                        throw Error();
+                    }
+
+                    if (view.getUint8(8) !== DebugOperation.OPEN_DBG_SESS) {
+                        console.log('Unexpected response operation when trying to open debug session');
+                        throw Error();
+                    }
+
+                    this.#SessOpen = true;
+                }
+
+            } catch (err) {
+                console.log('Failed to open debug session. Trying again soon.');
+            }
+            setTimeout(() => {
+                this.openSession();
+            }, 5000);
+        }
+    }
+
+    /**
+     * Closes the currently open debug session
+     */
+    closeSession() {
+        if (this.#SessOpen) {
+            this.sendOperation(DebugOperation.CLOSE_DBG_SESS, null);
+        }
+    }
 
     /**
      *
@@ -132,8 +191,6 @@ class Application {
      */
     async sendOperation(op, body) {
         return new Promise((resolve, reject) => {
-            const magic = 0x4772c3bc657a693fn; // Grüezi?
-
             let buffSize = 9;
             // If body is given add its size to the total buffer size
             if (body) {
@@ -147,7 +204,7 @@ class Application {
             }
             const view = new DataView(buff.buffer);
 
-            view.setBigUint64(0, magic);
+            view.setBigUint64(0, Application.RequestMagic);
             view.setUint8(8, op);
 
             fetch('http://127.0.0.1:2001', {
@@ -247,16 +304,6 @@ class Application {
             }).catch((err) => {
                 reject(err);
             })
-        });
-    }
-
-    openSession() {
-        this.requestHandshake().then((res) => {
-            // Errors ???
-            this.handleResponse(res);
-            this.sendOperation(DebugOperation.GET_REGISTERS).then((regsRes) => {
-                this.handleResponse(regsRes);
-            });
         });
     }
 
@@ -487,4 +534,9 @@ nav.addEventListener('click', (event) => {
             }
         }
     }
+});
+
+const closeDbgSessBtn = document.getElementsByClassName('close-btn')[0];
+closeDbgSessBtn.addEventListener('click', () => {
+    App.closeSession();
 });
