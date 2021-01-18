@@ -39,6 +39,15 @@ const RegId = {
     FL: 4,
 }
 
+/**
+ * Outputs a message to the debug console
+ * @param {String} msg
+ */
+function debugConsole(msg) {
+    const dbgConsole = document.getElementsByClassName('console-output')[0];
+    dbgConsole.value += `[Debug] ${msg}\n`;
+}
+
 class Application {
 
     static ResponseMagic = 0x4772c3bc657a6921n;
@@ -60,7 +69,7 @@ class Application {
      */
     async openSession() {
         if (!this.#SessOpen) {
-            console.log('Trying to open debug session...');
+            debugConsole('Trying to open debug session...');
             const data = new Uint8Array(9);
             const view = new DataView(data.buffer);
             view.setBigUint64(0, Application.RequestMagic);
@@ -74,6 +83,7 @@ class Application {
                 const buff = await req.arrayBuffer();
                 const view = new DataView(buff);
 
+
                 if (view.byteLength === 9) {
                     if (view.getBigUint64(0, true) !== Application.ResponseMagic) {
                         console.log('Unexpected response magic when trying to open debug session');
@@ -85,11 +95,12 @@ class Application {
                         throw Error();
                     }
 
+                    debugConsole('Successfully opened debug session');
                     this.#SessOpen = true;
                 }
 
             } catch (err) {
-                console.log('Failed to open debug session. Trying again soon.');
+                debugConsole('Failed to open debug session');
             }
             setTimeout(() => {
                 this.openSession();
@@ -103,6 +114,7 @@ class Application {
     closeSession() {
         if (this.#SessOpen) {
             this.sendOperation(DebugOperation.CLOSE_DBG_SESS, null);
+            debugConsole('Closed debug session');
         }
     }
 
