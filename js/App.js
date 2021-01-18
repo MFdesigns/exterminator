@@ -241,8 +241,12 @@ class Debugger {
     async openSession() {
         if (!this.#SessOpen) {
             debugConsole('Trying to open debug session...');
-            const op = await this.sendOperation(DebugOperation.OPEN_DBG_SESS, null);
-            this.handleResponse(op);
+            try {
+                const op = await this.sendOperation(DebugOperation.OPEN_DBG_SESS, null);
+                this.handleResponse(op);
+            } catch (err) {
+                console.log(err);
+            }
 
             setTimeout(() => {
                 this.openSession();
