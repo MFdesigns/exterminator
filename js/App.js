@@ -79,38 +79,15 @@ class Application {
     async openSession() {
         if (!this.#SessOpen) {
             debugConsole('Trying to open debug session...');
-            const data = new Uint8Array(9);
-            const view = new DataView(data.buffer);
-            view.setBigUint64(0, Application.RequestMagic);
-            view.setUint8(8, DebugOperation.OPEN_DBG_SESS);
-
-            try {
-                const req = await fetch('http://127.0.0.1:2001', {
-                    method: 'POST',
-                    body: data,
-                })
-                const buff = await req.arrayBuffer();
-                const view = new DataView(buff);
-
-
-                if (view.byteLength === 9) {
-                    if (view.getBigUint64(0, true) !== Application.ResponseMagic) {
-                        console.log('Unexpected response magic when trying to open debug session');
-                        throw Error();
-                    }
-
-                    if (view.getUint8(8) !== DebugOperation.OPEN_DBG_SESS) {
-                        console.log('Unexpected response operation when trying to open debug session');
-                        throw Error();
-                    }
-
-                    debugConsole('Successfully opened debug session');
-                    this.#SessOpen = true;
-                }
-
-            } catch (err) {
+            const op = await this.sendOperation(DebugOperation.OPEN_DBG_SESS, null);
+            const res = this.handleResponse(op);
+            if (res) {
+                debugConsole('Successfully opened debug session');
+                this.#SessOpen = true;
+            } else {
                 debugConsole('Failed to open debug session');
             }
+
             setTimeout(() => {
                 this.openSession();
             }, 5000);
@@ -246,8 +223,10 @@ class Application {
     /**
      * Handles a HTTP response from the server
      * @param {ArrayBuffer} res
+     * @return {bool}
      */
     handleResponse(res) {
+        let status = true;
         const resView = new DataView(res);
 
         // Check if minimal response size is met
@@ -270,6 +249,7 @@ class Application {
             case DebugOperation.DBG_ERROR: {
                 const error = ErrorCodes[resView.getUint8(9)];
                 debugConsole(`Response error: ${error}`);
+                status = false;
             }
                 break;
             case DebugOperation.DBG_GET_REGS:
@@ -299,9 +279,11 @@ class Application {
                 break;
             default:
                 console.error("Reponse contains unknown operation code");
-                return;
+                status = false;
                 break;
         }
+
+        return status;
     }
 
     async requestHandshake() {
@@ -338,9 +320,9 @@ class Application {
     }
 
     /**
-     *
-     * @param {BigInteger} flagReg
-     */
+*
+* @param {BigInteger} flagReg
+*/
     setFlags(flagReg) {
         const flagsTableBody = document.getElementsByClassName('flags-table-body')[0];
         const clearMask = 1;
