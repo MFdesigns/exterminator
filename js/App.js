@@ -151,6 +151,10 @@ function displayFileInfo() {
     const sections = document.getElementsByClassName('ux-sec-table-body')[0];
     const secNames = document.getElementsByClassName('ux-sec-name-table-body')[0];
 
+    info.innerHTML = '';
+    sections.innerHTML = '';
+    secNames.innerHTML = '';
+
     info.innerHTML += `
     <tr>
         <td>Magic</td>
