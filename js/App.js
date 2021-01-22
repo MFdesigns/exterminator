@@ -245,7 +245,7 @@ class Debugger {
     Registers = {};
     CurrentInstrElem = null;
     Breakpoints = [];
-    #SessOpen = false;
+    SessOpen = false;
 
     constructor() {
         this.openSession();
@@ -255,7 +255,7 @@ class Debugger {
      * Tries to open a debug session until successful
      */
     async openSession() {
-        if (!this.#SessOpen) {
+        if (!this.SessOpen) {
             debugConsole('Trying to open debug session...');
             try {
                 const op = await this.sendOperation(DebugOperation.DBG_OPEN_DBG_SESS, null);
@@ -274,7 +274,7 @@ class Debugger {
      * Closes the currently open debug session
      */
     closeSession() {
-        if (this.#SessOpen) {
+        if (this.SessOpen) {
             this.sendOperation(DebugOperation.DBG_CLOSE_DBG_SESS, null).then((res) => {
                 this.handleResponse(res);
             });
@@ -450,7 +450,7 @@ class Debugger {
             case DebugOperation.DBG_OPEN_DBG_SESS:
                 setUIState(UIState.OPEN_SESS);
                 debugConsole('Successfully opened debug session');
-                this.#SessOpen = true;
+                this.SessOpen = true;
                 break;
             case DebugOperation.DBG_CLOSE_DBG_SESS:
                 setUIState(UIState.CLOSED_SES);
