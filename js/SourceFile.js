@@ -25,10 +25,6 @@ class Section {
 }
 
 class SectionName {
-    Addr = 0;
-    Size = 0;
-    Str = '';
-
     constructor(addr, size, str) {
         this.Addr = addr;
         this.Size = size;
@@ -37,7 +33,6 @@ class SectionName {
 }
 
 class SourceFile {
-
     constructor(file) {
         this.FileBuffer = file;
         this.Magic = 0;
