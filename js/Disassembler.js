@@ -34,9 +34,6 @@ const InstrParam = {
 }
 
 class DisasmInstr {
-    Addr = 0;
-    Asm = 0;
-
     constructor(addr, asm) {
         this.Addr = addr;
         this.Asm = asm;
@@ -44,11 +41,6 @@ class DisasmInstr {
 }
 
 class Instruction {
-    Opcode = 0;
-    Params = [];
-    Name = '';
-    EncodedType = false;
-
     constructor(op, name, params, typeEncoded) {
         this.Opcode = op;
         this.Params = params;
@@ -67,10 +59,9 @@ export class Disassembler {
         0xF0: 'f32',
         0xF1: 'f64',
     }
-    SourceFile;
-    Disasm = [];
 
     constructor(src) {
+        this.Disasm = [];
         this.SourceFile = src;
 
         if (Object.keys(Disassembler.Instructions).length === 0) {

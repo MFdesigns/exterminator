@@ -38,19 +38,17 @@ class SectionName {
 
 class SourceFile {
 
-    FileBuffer = 0;
-    Magic = 0;
-    Version = 0;
-    Mode = 0;
-    StartAddr = 0;
-    SecTableSize = 0;
-    Sections = [];
-    SectionNames = [];
-    Encoder = new TextEncoder('utf-8');
-    Decoder = new TextDecoder('utf-8');
-
     constructor(file) {
         this.FileBuffer = file;
+        this.Magic = 0;
+        this.Version = 0;
+        this.Mode = 0;
+        this.StartAddr = 0;
+        this.SecTableSize = 0;
+        this.Sections = [];
+        this.SectionNames = [];
+        this.Encoder = new TextEncoder('utf-8');
+        this.Decoder = new TextDecoder('utf-8');
     }
 
     parse() {

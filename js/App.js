@@ -240,14 +240,14 @@ class Debugger {
     static ResponseMagic = 0x4772c3bc657a6921n;
     static RequestMagic = 0x4772c3bc657a693fn;
 
-    Source = null;
-    Disasm = null;
-    Registers = {};
-    CurrentInstrElem = null;
-    Breakpoints = [];
-    SessOpen = false;
-
     constructor() {
+        this.Source = null;
+        this.Disasm = null;
+        this.Registers = {};
+        this.CurrentInstrElem = null;
+        this.Breakpoints = [];
+        this.SessOpen = false;
+
         this.openSession();
     }
 
