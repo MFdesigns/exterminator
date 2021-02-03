@@ -10,5 +10,5 @@ Because this project uses ES modules, the website has to be served from a server
 ### Minimal browser version
 - Google Chrome `v88`
 - Microsoft Edge `v88`
-- Mozila Firefox `v84`
+- Mozilla Firefox `v84`
 - Apple Safari `v14`
