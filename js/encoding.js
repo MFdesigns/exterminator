@@ -502,8 +502,8 @@ export const encoding = {
                     "encodeType": false,
                     "params": [
                         "iT",
-                        "int",
-                        "iReg"
+                        "iReg",
+                        "int"
                     ],
                     "typeVariants": [
                         {
@@ -545,17 +545,17 @@ export const encoding = {
                     "encodeType": false,
                     "params": [
                         "fT",
-                        "float",
-                        "fReg"
+                        "fReg",
+                        "float"
                     ],
                     "typeVariants": [
                         {
-                            "type": "i32",
-                            "opcode": "0x37"
+                            "type": "f32",
+                            "opcode": "0x36"
                         },
                         {
-                            "type": "i64",
-                            "opcode": "0x38"
+                            "type": "f64",
+                            "opcode": "0x37"
                         }
                     ]
                 },
@@ -580,8 +580,8 @@ export const encoding = {
                     "encodeType": false,
                     "params": [
                         "iT",
-                        "int",
-                        "iReg"
+                        "iReg",
+                        "int"
                     ],
                     "typeVariants": [
                         {
@@ -623,16 +623,16 @@ export const encoding = {
                     "encodeType": false,
                     "params": [
                         "fT",
-                        "float",
-                        "fReg"
+                        "fReg",
+                        "float"
                     ],
                     "typeVariants": [
                         {
-                            "type": "i32",
+                            "type": "f32",
                             "opcode": "0x46"
                         },
                         {
-                            "type": "i64",
+                            "type": "f64",
                             "opcode": "0x47"
                         }
                     ]
@@ -658,8 +658,8 @@ export const encoding = {
                     "encodeType": false,
                     "params": [
                         "iT",
-                        "int",
-                        "iReg"
+                        "iReg",
+                        "int"
                     ],
                     "typeVariants": [
                         {
@@ -701,16 +701,16 @@ export const encoding = {
                     "encodeType": false,
                     "params": [
                         "fT",
-                        "float",
-                        "fReg"
+                        "fReg",
+                        "float"
                     ],
                     "typeVariants": [
                         {
-                            "type": "i32",
+                            "type": "f32",
                             "opcode": "0x56"
                         },
                         {
-                            "type": "i64",
+                            "type": "f64",
                             "opcode": "0x57"
                         }
                     ]
@@ -736,8 +736,8 @@ export const encoding = {
                     "encodeType": false,
                     "params": [
                         "iT",
-                        "int",
-                        "iReg"
+                        "iReg",
+                        "int"
                     ],
                     "typeVariants": [
                         {
@@ -779,16 +779,16 @@ export const encoding = {
                     "encodeType": false,
                     "params": [
                         "fT",
-                        "float",
-                        "fReg"
+                        "fReg",
+                        "float"
                     ],
                     "typeVariants": [
                         {
-                            "type": "i32",
+                            "type": "f32",
                             "opcode": "0x66"
                         },
                         {
-                            "type": "i64",
+                            "type": "f64",
                             "opcode": "0x67"
                         }
                     ]
