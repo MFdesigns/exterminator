@@ -1,0 +1,3 @@
+[submodule "uvm-isa"]
+	path = uvm-isa
+	url = https://github.com/MFdesigns/uvm-isa
