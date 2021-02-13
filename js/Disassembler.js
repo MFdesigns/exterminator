@@ -226,7 +226,7 @@ export class Disassembler {
         let codeSec = 0;
         for (let i = 0; i < this.SourceFile.Sections.length; i++) {
             const sec = this.SourceFile.Sections[i];
-            if (sec.Type === 0x5) {
+            if (sec.Type === 0x6) {
                 codeSec = sec;
                 break;
             }
