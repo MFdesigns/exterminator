@@ -140,6 +140,7 @@ export class DebugModel {
      * Tries to open a debug session until successful
      */
   async openSession() {
+    console.log('test');
     if (!this.SessOpen) {
       this.DbgView.debugConsole('Trying to open debug session...');
       try {
@@ -164,6 +165,7 @@ export class DebugModel {
         this.handleResponse(res);
       });
       this.DbgView.debugConsole('Closed debug session');
+      this.SessOpen = false;
     }
   }
 

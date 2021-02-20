@@ -27,6 +27,7 @@ export class DebugView {
     this.Elem.startBtn = document.getElementsByClassName('start-btn')[0];
     this.Elem.stopBtn = document.getElementsByClassName('stop-btn')[0];
     this.Elem.closeDbgSessBtn = document.getElementsByClassName('close-btn')[0];
+    this.Elem.openDbgSessBtn = document.getElementsByClassName('open-btn')[0];
     this.Elem.fileUploadBtn = document.getElementsByClassName('upload-btn')[0];
     this.Elem.disasmOutput = document.getElementsByClassName('disasm-output')[0];
     this.Elem.asmLineTemp = document.getElementsByClassName('asm-line-template')[0];
@@ -48,6 +49,7 @@ export class DebugView {
     switch (state) {
       case UIState.CLOSED_SES:
         this.Elem.closeDbgSessBtn.disabled = true;
+        this.Elem.openDbgSessBtn.disabled = false;
         this.Elem.fileUploadBtn.disabled = true;
         this.Elem.startBtn.disabled = true;
         this.Elem.stopBtn.disabled = true;
@@ -56,6 +58,7 @@ export class DebugView {
         break;
       case UIState.OPEN_SESS:
         this.Elem.closeDbgSessBtn.disabled = false;
+        this.Elem.openDbgSessBtn.disabled = true;
         this.Elem.fileUploadBtn.disabled = false;
         this.Elem.startBtn.disabled = true;
         this.Elem.stopBtn.disabled = true;
@@ -68,6 +71,7 @@ export class DebugView {
         break;
       case UIState.FILE_SELECTED:
         this.Elem.closeDbgSessBtn.disabled = false;
+        this.Elem.openDbgSessBtn.disabled = true;
         this.Elem.fileUploadBtn.disabled = false;
         this.Elem.startBtn.disabled = false;
         this.Elem.stopBtn.disabled = true;
@@ -80,6 +84,7 @@ export class DebugView {
         break;
       case UIState.APP_RUNNING:
         this.Elem.closeDbgSessBtn.disabled = false;
+        this.Elem.openDbgSessBtn.disabled = true;
         this.Elem.fileUploadBtn.disabled = false;
         this.Elem.startBtn.disabled = true;
         this.Elem.stopBtn.disabled = false;

@@ -32,7 +32,8 @@ export class DebugController {
     this.DbgView.Elem.stopBtn.addEventListener('click', (e) => { this.stopExecution(e, this) });
     this.DbgView.Elem.contBtn.addEventListener('click', (e) => { this.continueToBreakpoint(e, this) });
     this.DbgView.Elem.disasmOutput.addEventListener('click', (e) => { this.toggleBreakpoint(e, this) });
-    this.DbgView.Elem.closeDbgSessBtn.addEventListener('click', (e) => { this.Model.closeSession() });
+    this.DbgView.Elem.closeDbgSessBtn.addEventListener('click', (e) => { this.closeSession(e, this) });
+    this.DbgView.Elem.openDbgSessBtn.addEventListener('click', (e) => { this.openSession(e, this) });
   }
 
 	/**
@@ -53,7 +54,6 @@ export class DebugController {
 	 * @param {DebugController} ctrl
 	 */
   async startExecution(event, ctrl) {
-    // TODO: Only works if file has been uploaded
     const fileBuffSize = ctrl.Model.SourceFile.FileBuffer.byteLength;
     const buffSize = 4 + fileBuffSize;
     const buff = new Uint8Array(buffSize);
@@ -95,6 +95,26 @@ export class DebugController {
     ctrl.Model.sendOperation(DebugOperation.DBG_CONTINUE_).then((res) => {
       ctrl.Model.handleResponse(res);
     });
+  }
+
+  /**
+	 * Close the current debug session
+	 * @param {Event} event
+	 * @param {DebugController} ctrl
+	 */
+  closeSession(event, ctrl) {
+    ctrl.DbgView.setUIState(UIState.CLOSED_SES);
+    ctrl.Model.closeSession();
+  }
+
+  /**
+	 * Open a new debug session
+	 * @param {Event} event
+	 * @param {DebugController} ctrl
+	 */
+  openSession(event, ctrl) {
+    this.DbgView.Elem.closeDbgSessBtn.diabled = true;
+    ctrl.Model.openSession();
   }
 
 	/**
