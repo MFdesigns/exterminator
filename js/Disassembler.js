@@ -15,8 +15,16 @@
 // ======================================================================== //
 
 import { encoding } from "./encoding.js";
+import Utils from "./utils.js";
 
-const InstrParam = {
+export const RegId = {
+    IP: 1,
+    SP: 2,
+    BP: 3,
+    FL: 4,
+}
+
+export const InstrParamType = {
     I8: 0,
     I16: 1,
     I32: 2,
@@ -34,13 +42,25 @@ const InstrParam = {
 }
 
 class DisasmInstr {
+    /**
+     * Constructs a new DisasmInstr
+     * @param {BigInt} addr Address of instruction
+     * @param {String} asm Assembly code line
+     */
     constructor(addr, asm) {
         this.Addr = addr;
         this.Asm = asm;
     }
 }
 
-class Instruction {
+export class Instruction {
+    /**
+     * Constructs a new Instruction
+     * @param {Number} op opcode
+     * @param {String} name instruction name
+     * @param {String[]} params string array of paramters
+     * @param {String} typeEncoded encoded type
+     */
     constructor(op, name, params, typeEncoded) {
         this.Opcode = op;
         this.Params = params;
@@ -51,89 +71,27 @@ class Instruction {
 
 export class Disassembler {
     static Instructions = {};
-    static TypeLookup = {
-        0x1: 'i8',
-        0x2: 'i16',
-        0x3: 'i32',
-        0x4: 'i64',
-        0xF0: 'f32',
-        0xF1: 'f64',
-    }
 
-    constructor(src) {
+    constructor() {
         this.Disasm = [];
-        this.SourceFile = src;
+        this.SourceFile = null;
 
         if (Object.keys(Disassembler.Instructions).length === 0) {
             this.getInstructions();
         }
     }
 
-    static typeToStr(type) {
-        const typeStr = Disassembler.TypeLookup[type];
-        if (!typeStr) {
-            console.error(`Unknown type: ${type}`);
-        }
-        return typeStr;
+    /**
+     * Set source file
+     * @param {SourceFile} src
+     */
+    setSource(src) {
+        this.SourceFile = src;
     }
 
-    static regToStr(reg) {
-        let regStr = '';
-
-        switch (reg) {
-            case 0x1:
-                regStr = 'ip';
-                break;
-            case 0x2:
-                regStr = 'sp';
-                break;
-            case 0x3:
-                regStr = 'bp';
-                break;
-        }
-
-        if (reg >= 0x5 && reg <= 0x15) {
-            regStr = `r${reg - 0x5}`;
-        } else if (reg >= 0x16 && reg <= 0x25) {
-            regStr = `f${reg - 0x16}`;
-        }
-
-        return regStr;
-    }
-
-    static regOffsetToStr(view, index) {
-        let roStr = '';
-
-        const layout = view.getUint8(index);
-        const iRegA = view.getUint8(index + 1);
-        const iRegB = view.getUint8(index + 2);
-        const imm32 = view.getUint32(index + 2, true);
-        const imm16 = view.getUint16(index + 3, true);
-
-        switch (layout) {
-            case 0x4F:
-                roStr = `[${Disassembler.regToStr(iRegA)}]`;
-                break;
-            case 0x2F:
-                roStr = `[${Disassembler.regToStr(iRegA)} + ${imm32}]`;
-                break;
-            case 0xAF:
-                roStr = `[${Disassembler.regToStr(iRegA)} - ${imm32}]`;
-                break;
-            case 0x1F:
-                roStr = `[${Disassembler.regToStr(iRegA)} + ${Disassembler.regToStr(iRegB)} * ${imm16}]`;
-                break;
-            case 0x8F:
-                roStr = `[${Disassembler.regToStr(iRegA)} - ${Disassembler.regToStr(iRegB)} * ${imm16}]`;
-                break;
-            default:
-                console.error(`Unknown register offset layout ${layout} at address 0x${index.toString(16)}`);
-                break;
-        }
-
-        return roStr;
-    }
-
+    /**
+     * Initializes instruction database
+     */
     getInstructions() {
         encoding.instructions.forEach((instr) => {
             instr.paramList.forEach((paramList) => {
@@ -144,32 +102,32 @@ export class Disassembler {
                     let paramType = 0;
                     switch (param) {
                         case "iT":
-                            paramType = InstrParam.INT_TYPE;
+                            paramType = InstrParamType.INT_TYPE;
                             break;
                         case "fT":
-                            paramType = InstrParam.FLOAT_TYPE;
+                            paramType = InstrParamType.FLOAT_TYPE;
                             break;
                         case "int":
-                            paramType = InstrParam.GENERIC_INT;
+                            paramType = InstrParamType.GENERIC_INT;
                             break;
                         case "float":
-                            paramType = InstrParam.GENERIC_FLOAT;
+                            paramType = InstrParamType.GENERIC_FLOAT;
                             break;
                         case "iReg":
-                            paramType = InstrParam.INT_REG;
+                            paramType = InstrParamType.INT_REG;
                             break;
                         case "fReg":
-                            paramType = InstrParam.FLOAT_REG;
+                            paramType = InstrParamType.FLOAT_REG;
                             break;
                         case "label":
-                            paramType = InstrParam.ADDRESS;
+                            paramType = InstrParamType.ADDRESS;
                             break;
                         case "RO":
-                            paramType = InstrParam.REG_OFFSET;
+                            paramType = InstrParamType.REG_OFFSET;
                             break;
                     }
 
-                    if (paramType === InstrParam.INT_TYPE || paramType === InstrParam.FLOAT_TYPE) {
+                    if (paramType === InstrParamType.INT_TYPE || paramType === InstrParamType.FLOAT_TYPE) {
                         if (paramList.encodeType === false) {
                             return;
                         }
@@ -183,31 +141,31 @@ export class Disassembler {
                         let replacement;
                         switch (variant.type) {
                             case "i8":
-                                replacement = InstrParam.I8;
+                                replacement = InstrParamType.I8;
                                 break;
                             case "i16":
-                                replacement = InstrParam.I16;
+                                replacement = InstrParamType.I16;
                                 break;
                             case "i32":
-                                replacement = InstrParam.I32;
+                                replacement = InstrParamType.I32;
                                 break;
                             case "i64":
-                                replacement = InstrParam.I64;
+                                replacement = InstrParamType.I64;
                                 break;
                             case "f32":
-                                replacement = InstrParam.F32;
+                                replacement = InstrParamType.F32;
                                 break;
                             case "f64":
-                                replacement = InstrParam.F64;
+                                replacement = InstrParamType.F64;
                                 break;
                         }
 
                         varParams.forEach((param, i) => {
                             switch (param) {
-                                case InstrParam.GENERIC_INT:
+                                case InstrParamType.GENERIC_INT:
                                     varParams[i] = replacement;
                                     break;
-                                case InstrParam.GENERIC_FLOAT:
+                                case InstrParamType.GENERIC_FLOAT:
                                     varParams[i] = replacement;
                                     break;
                             }
@@ -221,6 +179,9 @@ export class Disassembler {
         });
     }
 
+    /**
+     * Disassembles current source file
+     */
     disassemble() {
         // Find code section
         let codeSec = 0;
@@ -233,7 +194,7 @@ export class Disassembler {
         }
 
         if (codeSec === 0) {
-            console.error('Error could not disassemle file. No code section found.');
+            console.error('Error could not disassemble file. No code section found.');
             return;
         }
 
@@ -252,63 +213,63 @@ export class Disassembler {
 
             instr.Params.forEach((param) => {
                 switch (param) {
-                    case InstrParam.I8: {
+                    case InstrParamType.I8: {
                         const val = view.getUint8(cursor + instrWidth);
                         asm += val;
                         instrWidth += 1;
                     }
                         break;
-                    case InstrParam.I16: {
+                    case InstrParamType.I16: {
                         const val = view.getUint16(cursor + instrWidth, true);
                         asm += val;
                         instrWidth += 2;
                     }
                         break;
-                    case InstrParam.I32: {
+                    case InstrParamType.I32: {
                         const val = view.getUint32(cursor + instrWidth, true);
                         asm += val;
                         instrWidth += 4;
                     }
                         break;
-                    case InstrParam.I64: {
+                    case InstrParamType.I64: {
                         const val = view.getBigUint64(cursor + instrWidth, true);
                         asm += val;
                         instrWidth += 8;
                     }
                         break;
-                    case InstrParam.F32: {
+                    case InstrParamType.F32: {
                         const val = view.getFloat32(cursor + instrWidth, true);
                         asm += val;
                         instrWidth += 4;
                     }
                         break;
-                    case InstrParam.F64: {
+                    case InstrParamType.F64: {
                         const val = view.getFloat64(cursor + instrWidth, true);
                         asm += val;
                         instrWidth += 8;
                     }
                         break;
-                    case InstrParam.ADDRESS: {
+                    case InstrParamType.ADDRESS: {
                         const val = view.getBigUint64(cursor + instrWidth, true);
                         asm += val;
                         instrWidth += 8;
                     }
                         break;
-                    case InstrParam.FLOAT_TYPE:
-                    case InstrParam.INT_TYPE: {
+                    case InstrParamType.FLOAT_TYPE:
+                    case InstrParamType.INT_TYPE: {
                         const val = view.getUint8(cursor + instrWidth);
-                        asm += Disassembler.typeToStr(val);
+                        asm += Utils.typeToStr(val);
                         instrWidth += 1;
                     }
                         break;
-                    case InstrParam.REG_OFFSET:
-                        asm += Disassembler.regOffsetToStr(view, cursor + instrWidth);
+                    case InstrParamType.REG_OFFSET:
+                        asm += Utils.regOffsetToStr(view, cursor + instrWidth);
                         instrWidth += 6;
                         break;
-                    case InstrParam.INT_REG:
-                    case InstrParam.FLOAT_REG: {
+                    case InstrParamType.INT_REG:
+                    case InstrParamType.FLOAT_REG: {
                         const val = view.getUint8(cursor + instrWidth);
-                        asm += Disassembler.regToStr(val);
+                        asm += Utils.regToStr(val);
                         instrWidth += 1;
                     }
                         break;

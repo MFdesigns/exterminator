@@ -1,20 +1,12 @@
-// ======================================================================== //
-// Copyright 2020 Michel Fäh
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-// ======================================================================== //
-
 class Section {
+    /**
+     * Constructs a new Section
+     * @param {Number} type
+     * @param {Number} perms
+     * @param {BigInt} startAddr
+     * @param {Number} size
+     * @param {BigInt} nameAddr
+     */
     constructor(type, perms, startAddr, size, nameAddr) {
         this.Type = type;
         this.Perms = perms;
@@ -25,6 +17,12 @@ class Section {
 }
 
 class SectionName {
+    /**
+     * Constructs a new SectionName
+     * @param {BigInt} addr
+     * @param {Number} size
+     * @param {String} str
+     */
     constructor(addr, size, str) {
         this.Addr = addr;
         this.Size = size;
@@ -32,7 +30,11 @@ class SectionName {
     }
 }
 
-class SourceFile {
+export class SourceFile {
+    /**
+     * Constructs a new SourceFile
+     * @param {File} file
+     */
     constructor(file) {
         this.FileBuffer = file;
         this.Magic = 0;
@@ -46,6 +48,9 @@ class SourceFile {
         this.Decoder = new TextDecoder('utf-8');
     }
 
+    /**
+     * Parses source file
+     */
     parse() {
         const view = new DataView(this.FileBuffer.buffer);
 
@@ -91,5 +96,3 @@ class SourceFile {
         }
     }
 }
-
-export { SourceFile };
