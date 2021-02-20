@@ -90,64 +90,6 @@ export class DebugView {
   }
 
 	/**
-	 * Displays information about a parsed source file
-	 * @param {SourceFile} src
-	 */
-  displayFileInfo(src) {
-    // Header information
-    const info = document.getElementsByClassName('ux-header-body')[0];
-    const sections = document.getElementsByClassName('ux-sec-table-body')[0];
-    const secNames = document.getElementsByClassName('ux-sec-name-table-body')[0];
-
-    info.innerHTML = '';
-    sections.innerHTML = '';
-    secNames.innerHTML = '';
-
-    info.innerHTML += `
-    <tr>
-        <td>Magic</td>
-        <td>0x${src.Magic.toString(16).toUpperCase()}</td>
-    </tr>
-    <tr>
-        <td>Version</td>
-        <td>0x${src.Version.toString(16).toUpperCase()}</td>
-    </tr>
-    <tr>
-        <td>Mode</td>
-        <td>0x${src.Mode.toString(16).toUpperCase()}</td>
-    </tr>
-    <tr>
-        <td>Start Address</td>
-        <td>${formatVAddr(src.StartAddr)}</td>
-    </tr>
-    `;
-
-    // Section table
-    src.Sections.forEach((sec) => {
-      sections.innerHTML += `
-        <tr>
-            <td>0x${sec.Type.toString(16).toUpperCase()}</td>
-            <td>0x${sec.Perms.toString(16).toUpperCase()}</td>
-            <td>${formatVAddr(sec.StartAddr)}</td>
-            <td>0x${sec.Size.toString(16).toUpperCase()}</td>
-            <td>${formatVAddr(sec.NameAddr)}</td>
-        </tr>
-        `;
-    });
-
-    // Section name table
-    src.SectionNames.forEach((name) => {
-      secNames.innerHTML += `
-        <tr>
-            <td>${formatVAddr(name.Addr)}</td>
-            <td>0x${name.Size.toString(16).toUpperCase()}</td>
-            <td>${name.Str}</td>
-        </tr>
-        `;
-    });
-  }
-
-	/**
 	 * Displays disassembled instructions
 	 * @param {DisasmInstr[]} disasm
 	 */

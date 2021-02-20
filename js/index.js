@@ -1,6 +1,7 @@
 import { DebugModel } from './model.js';
 import { DebugView } from './views/debugView.js';
 import { DebugController } from './controller.js';
+import { InfoView } from './views/infoView.js';
 
 /** Global reference to controller */
 let ctrl = null;
@@ -8,7 +9,8 @@ let ctrl = null;
 (function main() {
   const model = new DebugModel();
   const dbgView = new DebugView()
-  ctrl = new DebugController(model, dbgView);
+  const infoView = new InfoView()
+  ctrl = new DebugController(model, dbgView, infoView);
 })();
 
 // ======================= //

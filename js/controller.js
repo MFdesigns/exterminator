@@ -1,19 +1,22 @@
 import { DebugOperation } from './model.js'
 import { UIState } from './views/debugView.js'
+import { InfoView } from './views/infoView.js';
 
 export class DebugController {
 	/**
 	 * Constructs a new DebugController
 	 * @param {DebugModel} model
-	 * @param {DebugView} view
+	 * @param {DebugView} dbgView
+	 * @param {InfoView} infoView
 	 */
-  constructor(model, view) {
+  constructor(model, dbgView, infoView) {
     /** Model */
     this.Model = model;
-    /** View */
-    this.View = view;
+    /** Views */
+    this.DbgView = dbgView;
+    this.InfoView = infoView;
 
-    this.Model.setView(this.View);
+    this.Model.setViews(this.DbgView, this.InfoView);
     this.setupEventHandlers();
 
     this.Model.openSession();
@@ -23,13 +26,13 @@ export class DebugController {
 	 * Sets up all event handlers
 	 */
   setupEventHandlers() {
-    this.View.Elem.fileUploadBtn.addEventListener('change', (e) => { this.uploadFile(e, this) });
-    this.View.Elem.startBtn.addEventListener('click', (e) => { this.startExecution(e, this) });
-    this.View.Elem.nextBtn.addEventListener('click', (e) => { this.nextInstruction(e, this) });
-    this.View.Elem.stopBtn.addEventListener('click', (e) => { this.stopExecution(e, this) });
-    this.View.Elem.contBtn.addEventListener('click', (e) => { this.continueToBreakpoint(e, this) });
-    this.View.Elem.disasmOutput.addEventListener('click', (e) => { this.toggleBreakpoint(e, this) });
-    this.View.Elem.closeDbgSessBtn.addEventListener('click', (e) => { this.Model.closeSession() });
+    this.DbgView.Elem.fileUploadBtn.addEventListener('change', (e) => { this.uploadFile(e, this) });
+    this.DbgView.Elem.startBtn.addEventListener('click', (e) => { this.startExecution(e, this) });
+    this.DbgView.Elem.nextBtn.addEventListener('click', (e) => { this.nextInstruction(e, this) });
+    this.DbgView.Elem.stopBtn.addEventListener('click', (e) => { this.stopExecution(e, this) });
+    this.DbgView.Elem.contBtn.addEventListener('click', (e) => { this.continueToBreakpoint(e, this) });
+    this.DbgView.Elem.disasmOutput.addEventListener('click', (e) => { this.toggleBreakpoint(e, this) });
+    this.DbgView.Elem.closeDbgSessBtn.addEventListener('click', (e) => { this.Model.closeSession() });
   }
 
 	/**
@@ -38,7 +41,7 @@ export class DebugController {
 	 * @param {DebugController} ctrl
 	 */
   uploadFile(event, ctrl) {
-    const file = ctrl.View.Elem.fileUploadBtn.files[0];
+    const file = ctrl.DbgView.Elem.fileUploadBtn.files[0];
     if (file) {
       ctrl.Model.setSource(file);
     }
@@ -80,7 +83,7 @@ export class DebugController {
 	 */
   stopExecution(event, ctrl) {
     ctrl.Model.sendOperation(DebugOperation.DBG_STOP_EXE);
-    ctrl.View.setUIState(UIState.FILE_SELECTED);
+    ctrl.DbgView.setUIState(UIState.FILE_SELECTED);
   }
 
 	/**

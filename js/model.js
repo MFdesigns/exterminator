@@ -1,6 +1,7 @@
 import { Disassembler, RegId } from './disassembler.js'
-import { UIState } from './views/debugView.js'
 import { SourceFile } from './sourceFile.js'
+import { UIState } from './views/debugView.js'
+import { InfoView } from './views/infoView.js'
 import * as Utils from './utils.js'
 
 export const DebugOperation = {
@@ -76,11 +77,13 @@ export class DebugModel {
   }
 
 	/**
-	 * Sets the view
-	 * @param {DebugView} view
+	 * Sets the views
+	 * @param {DebugView} dbgView
+	 * @param {InfoView} infoView
 	 */
-  setView(view) {
-    this.View = view;
+  setViews(dbgView, infoView) {
+    this.DbgView = dbgView;
+    this.InfoView = infoView;
   }
 
 	/**
@@ -92,13 +95,13 @@ export class DebugModel {
     this.SourceFile = new SourceFile(new Uint8Array(fileBuffer));
 
     this.SourceFile.parse();
-    this.View.displayFileInfo(this.SourceFile);
+    this.InfoView.displayFileInfo(this.SourceFile);
 
     this.Disasmbler.setSource(this.SourceFile);
     this.Disasmbler.disassemble();
 
-    this.View.displayDisasm(this.Disasmbler.Disasm);
-    this.View.setUIState(UIState.FILE_SELECTED);
+    this.DbgView.displayDisasm(this.Disasmbler.Disasm);
+    this.DbgView.setUIState(UIState.FILE_SELECTED);
   }
 
 	/**
@@ -129,8 +132,8 @@ export class DebugModel {
    */
   reportRuntimeError(err) {
     const errMsg = Utils.translateRuntimeError(err);
-    this.View.debugConsole(`RUNTIME ERROR: ${errMsg}`);
-    this.View.setUIState(UIState.FILE_SELECTED);
+    this.DbgView.debugConsole(`RUNTIME ERROR: ${errMsg}`);
+    this.DbgView.setUIState(UIState.FILE_SELECTED);
   }
 
 	/**
@@ -138,7 +141,7 @@ export class DebugModel {
      */
   async openSession() {
     if (!this.SessOpen) {
-      this.View.debugConsole('Trying to open debug session...');
+      this.DbgView.debugConsole('Trying to open debug session...');
       try {
         const op = await this.sendOperation(DebugOperation.DBG_OPEN_DBG_SESS, null);
         this.handleResponse(op);
@@ -160,7 +163,7 @@ export class DebugModel {
       this.sendOperation(DebugOperation.DBG_CLOSE_DBG_SESS, null).then((res) => {
         this.handleResponse(res);
       });
-      this.View.debugConsole('Closed debug session');
+      this.DbgView.debugConsole('Closed debug session');
     }
   }
 
@@ -234,7 +237,7 @@ export class DebugModel {
           this.reportRuntimeError(runtimeErr);
         } else {
           const errorMsg = ErrorCodes[errorCode];
-          this.View.debugConsole(`Response error: ${errorMsg}`);
+          this.DbgView.debugConsole(`Response error: ${errorMsg}`);
         }
         status = false;
       }
@@ -246,30 +249,30 @@ export class DebugModel {
         const regBuffer = res.slice(0, regBuffSize);
         const consoleBuffer = res.slice(regBuffSize, res.byteLength);
         this.setRegisters(regBuffer);
-        this.View.consoleOut(consoleBuffer);
+        this.DbgView.consoleOut(consoleBuffer);
 
         if (resOp === DebugOperation.DBG_EXE_FIN) {
-          this.View.setUIState(UIState.FILE_SELECTED);
-          this.View.debugConsole('Finished execution');
+          this.DbgView.setUIState(UIState.FILE_SELECTED);
+          this.DbgView.debugConsole('Finished execution');
         }
       }
         break;
       case DebugOperation.DBG_OPEN_DBG_SESS:
-        this.View.setUIState(UIState.OPEN_SESS);
-        this.View.debugConsole('Successfully opened debug session');
+        this.DbgView.setUIState(UIState.OPEN_SESS);
+        this.DbgView.debugConsole('Successfully opened debug session');
         this.SessOpen = true;
         break;
       case DebugOperation.DBG_CLOSE_DBG_SESS:
-        this.View.setUIState(UIState.CLOSED_SES);
+        this.DbgView.setUIState(UIState.CLOSED_SES);
         break;
       case DebugOperation.DBG_RUN_APP:
       case DebugOperation.DBG_CONTINUE_:
-        this.View.setUIState(UIState.APP_RUNNING);
+        this.DbgView.setUIState(UIState.APP_RUNNING);
         const regBuffSize = 36 * 9 + 9;
         const regBuffer = res.slice(0, regBuffSize);
         const consoleBuffer = res.slice(regBuffSize, res.byteLength);
         this.setRegisters(regBuffer);
-        this.View.consoleOut(consoleBuffer);
+        this.DbgView.consoleOut(consoleBuffer);
         break;
       default:
         console.error(`Reponse contains unknown operation code: ${resOp}`);
@@ -304,7 +307,7 @@ export class DebugModel {
 
       cursor += regEntrySize;
     }
-    this.View.updateRegisters(this.Registers);
+    this.DbgView.updateRegisters(this.Registers);
   }
 
 	/**
