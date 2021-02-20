@@ -28,11 +28,11 @@ const ErrorCodes = {
 }
 
 class Register {
-	/**
-	 * Constructs a new register
-	 * @param {String} name Registers name
-	 * @param {Number} name Registers id
-	 */
+  /**
+   * Constructs a new register
+   * @param {String} name Registers name
+   * @param {Number} name Registers id
+   */
   constructor(name, id) {
     this.Name = name;
     this.Id = id;
@@ -40,10 +40,10 @@ class Register {
     this.HasChanged = false;
   }
 
-	/**
-	 * Sets the registers value
-	 * @param {Nubmer} val
-	 */
+  /**
+   * Sets the registers value
+   * @param {Nubmer} val
+   */
   setValue(val) {
     // Weak comparison because we need to compare float to int
     if (val == this.Value) {
@@ -76,20 +76,20 @@ export class DebugModel {
     }
   }
 
-	/**
-	 * Sets the views
-	 * @param {DebugView} dbgView
-	 * @param {InfoView} infoView
-	 */
+  /**
+   * Sets the views
+   * @param {DebugView} dbgView
+   * @param {InfoView} infoView
+   */
   setViews(dbgView, infoView) {
     this.DbgView = dbgView;
     this.InfoView = infoView;
   }
 
-	/**
-	 * Sets the source file
-	 * @param {File} file
-	 */
+  /**
+   * Sets the source file
+   * @param {File} file
+   */
   async setSource(file) {
     const fileBuffer = await file.arrayBuffer();
     this.SourceFile = new SourceFile(new Uint8Array(fileBuffer));
@@ -104,9 +104,9 @@ export class DebugModel {
     this.DbgView.setUIState(UIState.FILE_SELECTED);
   }
 
-	/**
-	 * Initializes registers
-	 */
+  /**
+   * Initializes registers
+   */
   initRegisters() {
     this.Registers[RegId.IP] = new Register('ip', RegId.IP);
     this.Registers[RegId.SP] = new Register('sp', RegId.SP);
@@ -136,9 +136,9 @@ export class DebugModel {
     this.DbgView.setUIState(UIState.FILE_SELECTED);
   }
 
-	/**
-     * Tries to open a debug session until successful
-     */
+  /**
+   * Tries to open a debug session until successful
+   */
   async openSession() {
     console.log('test');
     if (!this.SessOpen) {
@@ -156,9 +156,9 @@ export class DebugModel {
     }
   }
 
-	/**
-	 * Closes the currently open debug session
-	 */
+  /**
+   * Closes the currently open debug session
+   */
   closeSession() {
     if (this.SessOpen) {
       this.sendOperation(DebugOperation.DBG_CLOSE_DBG_SESS, null).then((res) => {
@@ -169,12 +169,12 @@ export class DebugModel {
     }
   }
 
-	/**
-     * Sends an operation to the debug server
-     * @param {DebugOperation} op
-     * @param {ArrayBuffer|null} body
-     * @return {Promise}
-     */
+  /**
+   * Sends an operation to the debug server
+   * @param {DebugOperation} op
+   * @param {ArrayBuffer|null} body
+   * @return {Promise}
+   */
   async sendOperation(op, body) {
     return new Promise((resolve, reject) => {
       let buffSize = 9;
@@ -206,11 +206,11 @@ export class DebugModel {
     })
   }
 
-	/**
-	 * Handles a HTTP response from the server
-	 * @param {ArrayBuffer} res
-	 * @return {bool}
-	 */
+  /**
+   * Handles a HTTP response from the server
+   * @param {ArrayBuffer} res
+   * @return {bool}
+   */
   handleResponse(res) {
     let status = true;
     const resView = new DataView(res);
@@ -285,10 +285,10 @@ export class DebugModel {
     return status;
   }
 
-	/**
-	 * Parses buffer and updates registers
-	 * @param {ArrayBuffer} buffer Buffer containing registers
-	 */
+  /**
+   * Parses buffer and updates registers
+   * @param {ArrayBuffer} buffer Buffer containing registers
+   */
   setRegisters(buffer) {
     const resView = new DataView(buffer);
     const regEntrySize = 9;
@@ -312,10 +312,10 @@ export class DebugModel {
     this.DbgView.updateRegisters(this.Registers);
   }
 
-	/**
-	 * Adds a new breakpoint if it not already exists otherwise removes it
-	 * @param {Number} breakpointId
-	 */
+  /**
+   * Adds a new breakpoint if it not already exists otherwise removes it
+   * @param {Number} breakpointId
+   */
   toggleBreakpoint(breakpointId) {
     const buffer = new ArrayBuffer(8);
     const view = new DataView(buffer);

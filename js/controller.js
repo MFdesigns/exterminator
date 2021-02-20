@@ -3,12 +3,12 @@ import { UIState } from './views/debugView.js'
 import { InfoView } from './views/infoView.js';
 
 export class DebugController {
-	/**
-	 * Constructs a new DebugController
-	 * @param {DebugModel} model
-	 * @param {DebugView} dbgView
-	 * @param {InfoView} infoView
-	 */
+  /**
+   * Constructs a new DebugController
+   * @param {DebugModel} model
+   * @param {DebugView} dbgView
+   * @param {InfoView} infoView
+   */
   constructor(model, dbgView, infoView) {
     /** Model */
     this.Model = model;
@@ -22,9 +22,9 @@ export class DebugController {
     this.Model.openSession();
   }
 
-	/**
-	 * Sets up all event handlers
-	 */
+  /**
+   * Sets up all event handlers
+   */
   setupEventHandlers() {
     this.DbgView.Elem.fileUploadBtn.addEventListener('change', (e) => { this.uploadFile(e, this) });
     this.DbgView.Elem.startBtn.addEventListener('click', (e) => { this.startExecution(e, this) });
@@ -36,11 +36,11 @@ export class DebugController {
     this.DbgView.Elem.openDbgSessBtn.addEventListener('click', (e) => { this.openSession(e, this) });
   }
 
-	/**
-	 * Handles file upload event
-	 * @param {Event} event
-	 * @param {DebugController} ctrl
-	 */
+  /**
+   * Handles file upload event
+   * @param {Event} event
+   * @param {DebugController} ctrl
+   */
   uploadFile(event, ctrl) {
     const file = ctrl.DbgView.Elem.fileUploadBtn.files[0];
     if (file) {
@@ -48,11 +48,11 @@ export class DebugController {
     }
   }
 
-	/**
-	 * Starts the execution of the file
-	 * @param {Event} event
-	 * @param {DebugController} ctrl
-	 */
+  /**
+   * Starts the execution of the file
+   * @param {Event} event
+   * @param {DebugController} ctrl
+   */
   async startExecution(event, ctrl) {
     const fileBuffSize = ctrl.Model.SourceFile.FileBuffer.byteLength;
     const buffSize = 4 + fileBuffSize;
@@ -66,31 +66,31 @@ export class DebugController {
     ctrl.Model.handleResponse(req);
   };
 
-	/**
-	 * Starts the execution of the file
-	 * @param {Event} event
-	 * @param {DebugController} ctrl
-	 */
+  /**
+   * Starts the execution of the file
+   * @param {Event} event
+   * @param {DebugController} ctrl
+   */
   async nextInstruction(event, ctrl) {
     const regArray = await ctrl.Model.sendOperation(DebugOperation.DBG_NEXT_INSTR);
     ctrl.Model.handleResponse(regArray);
   }
 
-	/**
-	 * Stops the execution of the file
-	 * @param {Event} event
-	 * @param {DebugController} ctrl
-	 */
+  /**
+   * Stops the execution of the file
+   * @param {Event} event
+   * @param {DebugController} ctrl
+   */
   stopExecution(event, ctrl) {
     ctrl.Model.sendOperation(DebugOperation.DBG_STOP_EXE);
     ctrl.DbgView.setUIState(UIState.FILE_SELECTED);
   }
 
-	/**
-	 * Continues to execute the file until a breakpoint is hit, runtime error occured or application is finished
-	 * @param {Event} event
-	 * @param {DebugController} ctrl
-	 */
+  /**
+   * Continues to execute the file until a breakpoint is hit, runtime error occured or application is finished
+   * @param {Event} event
+   * @param {DebugController} ctrl
+   */
   continueToBreakpoint(event, ctrl) {
     ctrl.Model.sendOperation(DebugOperation.DBG_CONTINUE_).then((res) => {
       ctrl.Model.handleResponse(res);
@@ -98,30 +98,30 @@ export class DebugController {
   }
 
   /**
-	 * Close the current debug session
-	 * @param {Event} event
-	 * @param {DebugController} ctrl
-	 */
+   * Close the current debug session
+   * @param {Event} event
+   * @param {DebugController} ctrl
+   */
   closeSession(event, ctrl) {
     ctrl.DbgView.setUIState(UIState.CLOSED_SES);
     ctrl.Model.closeSession();
   }
 
   /**
-	 * Open a new debug session
-	 * @param {Event} event
-	 * @param {DebugController} ctrl
-	 */
+   * Open a new debug session
+   * @param {Event} event
+   * @param {DebugController} ctrl
+   */
   openSession(event, ctrl) {
     this.DbgView.Elem.closeDbgSessBtn.diabled = true;
     ctrl.Model.openSession();
   }
 
-	/**
-	 * Toggles a breakpoint
-	 * @param {Event} event
-	 * @param {DebugController} ctrl
-	 */
+  /**
+   * Toggles a breakpoint
+   * @param {Event} event
+   * @param {DebugController} ctrl
+   */
   toggleBreakpoint(event, ctrl) {
     if (event.target.classList.contains('asm-line__breakpoint')) {
       const id = event.target.parentNode.id;

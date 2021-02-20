@@ -16,9 +16,9 @@ export class DebugView {
     this.getElements();
   }
 
-	/**
-	 * Gets all HTML element references
-	 */
+  /**
+   * Gets all HTML element references
+   */
   getElements() {
     this.Elem.dbgConsole = document.getElementsByClassName('console-output')[0];
     this.Elem.regTableBody = document.getElementsByClassName('reg-table-body')[0];
@@ -33,18 +33,18 @@ export class DebugView {
     this.Elem.asmLineTemp = document.getElementsByClassName('asm-line-template')[0];
   }
 
-	/**
-	 * Outputs a message to the debug console
-	 * @param {String} msg
-	 */
+  /**
+   * Outputs a message to the debug console
+   * @param {String} msg
+   */
   debugConsole(msg) {
     this.Elem.dbgConsole.value += `[Debug] ${msg}\n`;
   }
 
-	/**
-	 * Sets the toolbar UI state
-	 * @param {ToolbarState} state
-	 */
+  /**
+   * Sets the toolbar UI state
+   * @param {ToolbarState} state
+   */
   setUIState(state) {
     switch (state) {
       case UIState.CLOSED_SES:
@@ -94,10 +94,10 @@ export class DebugView {
     }
   }
 
-	/**
-	 * Displays disassembled instructions
-	 * @param {DisasmInstr[]} disasm
-	 */
+  /**
+   * Displays disassembled instructions
+   * @param {DisasmInstr[]} disasm
+   */
   displayDisasm(disasm) {
     const template = this.Elem.asmLineTemp.content;
     const frag = document.createDocumentFragment();
@@ -120,10 +120,10 @@ export class DebugView {
     this.Elem.disasmOutput.appendChild(frag);
   }
 
-	/**
-    * Updates the flags display
-    * @param {BigInteger} flagReg
-    */
+  /**
+   * Updates the flags display
+   * @param {BigInteger} flagReg
+   */
   setFlags(flagReg) {
     const flagsTableBody = document.getElementsByClassName('flags-table-body')[0];
     const clearMask = 1;
@@ -133,18 +133,18 @@ export class DebugView {
     const sign = Number(flagReg >> 61n) & clearMask;
 
     flagsTableBody.innerHTML = `
-		<tr>
-			<td>${carry}</td>
-			<td>${zero}</td>
-			<td>${sign}</td>
-		</tr>
-		`;
+    <tr>
+      <td>${carry}</td>
+      <td>${zero}</td>
+      <td>${sign}</td>
+    </tr>
+    `;
   }
 
-	/**
-	 * Updates the UI to indicate the current instruction
-	 * @param {BigInt} ip Instruction pointer
-	 */
+  /**
+   * Updates the UI to indicate the current instruction
+   * @param {BigInt} ip Instruction pointer
+   */
   setCurrentInstruction(ip) {
     if (this.CurrentInstrElem) {
       this.CurrentInstrElem.classList.toggle('asm-line--active', false);
@@ -154,10 +154,10 @@ export class DebugView {
     this.CurrentInstrElem.classList.toggle('asm-line--active', true);
   }
 
-	/**
-	 * Updates the register display
-	 * @param {Registers[]} regs
-	 */
+  /**
+   * Updates the register display
+   * @param {Registers[]} regs
+   */
   updateRegisters(regs) {
     const temp = document.getElementsByClassName('register-template')[0].content;
     const frag = document.createDocumentFragment();
@@ -185,10 +185,10 @@ export class DebugView {
     this.setCurrentInstruction(regs[RegId.IP].Value);
   }
 
-	/**
-	 * Output array buffer received from UVM
-	 * @param {ArrayBuffer} buff
-	 */
+  /**
+   * Output array buffer received from UVM
+   * @param {ArrayBuffer} buff
+   */
   consoleOut(buff) {
     const consoleElem = document.getElementsByClassName('console-output')[0];
     const decoder = new TextDecoder('utf8');
