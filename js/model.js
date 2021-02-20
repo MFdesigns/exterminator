@@ -1,5 +1,4 @@
-import { encoding } from "./encoding.js";
-import { Disassembler, Instruction, InstrParamType, RegId } from "./disassembler.js"
+import { Disassembler, RegId } from "./disassembler.js"
 import { UIState } from './view.js'
 import { SourceFile } from './sourceFile.js'
 

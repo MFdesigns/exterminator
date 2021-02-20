@@ -46,7 +46,7 @@ export function formatRegId(id) {
  * @param {Number} type
  */
 export function typeToStr(type) {
-    const typeStr = Disassembler.TypeLookup[type];
+    const typeStr = TypeLookup[type];
     if (!typeStr) {
         console.error(`Unknown type: ${type}`);
     }

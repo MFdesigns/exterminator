@@ -1,4 +1,4 @@
-import { formatVAddr, formatRegId } from './utils.js';
+import { formatVAddr } from './utils.js';
 import { RegId } from './disassembler.js';
 
 export const UIState = {
