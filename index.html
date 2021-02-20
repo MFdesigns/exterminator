@@ -90,42 +90,51 @@
 
         <!-- File Info -->
         <div class="page page-file-info" data-page="file-info">
-            <div class="sidebar">
-                <h2>Info</h2>
-                <h3>Header</h3>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Attribute</th>
-                            <th>Value</th>
-                        </tr>
-                    </thead>
-                    <tbody class="ux-header-body"></tbody>
-                </table>
-                <h3>Section Table</h3>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Type</th>
-                            <th>Permission</th>
-                            <th>Start Address</th>
-                            <th>Size</th>
-                            <th>Section Name Address</th>
-                        </tr>
-                    </thead>
-                    <tbody class="ux-sec-table-body"></tbody>
-                </table>
-                <h3>Section Name Table</h3>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Address</th>
-                            <th>Size</th>
-                            <th>UTF-8 String</th>
-                        </tr>
-                    </thead>
-                    <tbody class="ux-sec-name-table-body"></tbody>
-                </table>
+            <div class="section sec-header">
+                <h2 class="section__title">Header</h2>
+                <div class="section__body section__body--overflow">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Attribute</th>
+                                <th>Value</th>
+                            </tr>
+                        </thead>
+                        <tbody class="ux-header-body"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="section sec-section-table">
+                <h2 class="section__title">Section Table</h2>
+                <div class="section__body section__body--overflow">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Permission</th>
+                                <th>Start Address</th>
+                                <th>Size</th>
+                                <th>Section Name Address</th>
+                            </tr>
+                        </thead>
+                        <tbody class="ux-sec-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="section sec-section-name-table">
+                <h2 class="section__title">Section Name Table</h2>
+                <div class="section__body section__body--overflow">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Address</th>
+                                <th>Size</th>
+                                <th>UTF-8 String</th>
+                            </tr>
+                        </thead>
+                        <tbody class="ux-sec-name-table-body"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </main>

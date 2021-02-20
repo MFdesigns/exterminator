@@ -11,7 +11,7 @@
 @font-face {
     src: url('../res/aileron_black.otf');
     font-family: 'Aileron';
-    font-weight: bolder;
+    font-weight: 900;
 }
 
 @font-face {
@@ -65,7 +65,7 @@ html {
     width: 16px;
 }
 
-table {
+.table {
     text-align: left;
     border-collapse: separate;
     border-spacing: 10px;
@@ -168,6 +168,16 @@ main {
     gap: 10px;
 }
 
+.page-file-info {
+    grid-template-columns: 2fr 3fr;
+    grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas:
+    "header     section-table"
+    "header     section-name-table"
+    ;
+    gap: 10px;
+}
+
 .section {
     display: grid;
     grid-template-columns: 1fr;
@@ -210,6 +220,16 @@ main {
 }
 .sec-console {
     grid-area: console;
+}
+
+.sec-header {
+    grid-area: header;
+}
+.sec-section-table {
+    grid-area: section-table;
+}
+.sec-section-name-table {
+    grid-area: section-name-table;
 }
 
 /* Disassembly */
