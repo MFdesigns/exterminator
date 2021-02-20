@@ -1,5 +1,5 @@
 import { Disassembler, RegId } from './disassembler.js'
-import { UIState } from './view.js'
+import { UIState } from './views/debugView.js'
 import { SourceFile } from './sourceFile.js'
 import * as Utils from './utils.js'
 

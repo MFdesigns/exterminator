@@ -1,5 +1,5 @@
 import { DebugOperation } from './model.js'
-import { UIState } from './view.js'
+import { UIState } from './views/debugView.js'
 
 export class DebugController {
 	/**

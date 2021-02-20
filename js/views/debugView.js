@@ -1,5 +1,5 @@
-import { formatVAddr } from './utils.js';
-import { RegId } from './disassembler.js';
+import { formatVAddr } from '../utils.js';
+import { RegId } from '../disassembler.js';
 
 export const UIState = {
   CLOSED_SES: 0,

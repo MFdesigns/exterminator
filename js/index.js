@@ -1,5 +1,5 @@
 import { DebugModel } from './model.js';
-import { DebugView } from './view.js';
+import { DebugView } from './views/debugView.js';
 import { DebugController } from './controller.js';
 
 /** Global reference to controller */
