@@ -167,22 +167,22 @@ export class DebugView {
       const node = temp.cloneNode(true);
 
       node.querySelector('.register__id').textContent = reg.Name;
-      node.querySelector('.register__value').textContent = formatVAddr(reg.Value);
+      node.querySelector('.register__value').textContent = formatVAddr(reg.UValue);
 
       if (reg.HasChanged) {
         node.querySelector('.register').classList.add('register--changed');
       }
 
       if (reg.Id === RegId.FL) {
-        this.setFlags(reg.Value);
+        this.setFlags(reg.UValue);
       }
 
-      node.querySelector('.register__typed-value').textContent = reg.Value;
+      node.querySelector('.register__typed-value').textContent = reg.SValue;
 
       frag.appendChild(node);
     })
     this.Elem.regTableBody.appendChild(frag);
-    this.setCurrentInstruction(regs[RegId.IP].Value);
+    this.setCurrentInstruction(regs[RegId.IP].UValue);
   }
 
   /**

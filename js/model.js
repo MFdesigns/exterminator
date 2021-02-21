@@ -36,22 +36,27 @@ class Register {
   constructor(name, id) {
     this.Name = name;
     this.Id = id;
-    this.Value = 0;
+    /** Signed value */
+    this.SValue = 0;
+    /** Unsigned value */
+    this.UValue = 0;
     this.HasChanged = false;
   }
 
   /**
    * Sets the registers value
-   * @param {Nubmer} val
+   * @param {Number} sVal Signed int or float
+   * @param {Number} uVal Unsigned int
    */
-  setValue(val) {
+  setValue(sVal, uVal) {
     // Weak comparison because we need to compare float to int
-    if (val == this.Value) {
+    if (sVal == this.SValue) {
       this.HasChanged = false;
     } else {
       this.HasChanged = true;
     }
-    this.Value = val;
+    this.SValue = sVal;
+    this.UValue = uVal;
   }
 }
 
@@ -295,15 +300,17 @@ export class DebugModel {
 
     while (cursor < buffer.byteLength) {
       const regId = resView.getUint8(cursor);
-      const regIntVal = resView.getBigUint64(cursor + 1, true);
+      const regSignedIntVal = resView.getBigInt64(cursor + 1, true);
+      const regUnsignedIntVal = resView.getBigUint64(cursor + 1, true);
       const regFloatVal = resView.getFloat64(cursor + 1);
 
       const reg = this.Registers[regId];
 
       if (regId >= 0 && regId <= 0x14) {
-        reg.setValue(regIntVal);
+        reg.setValue(regSignedIntVal, regUnsignedIntVal);
       } else if (regId >= 0x15 && regId <= 0x24) {
-        reg.setValue(regFloatVal);
+        // Float is signed and unsigned the same value. Unsigned does not exist
+        reg.setValue(regFloatVal, regFloatVal);
       }
 
       cursor += regEntrySize;

@@ -199,25 +199,25 @@ export class Disassembler {
         switch (param) {
           case InstrParamType.I8: {
             const val = view.getUint8(cursor + instrWidth);
-            asm += val;
+            asm += `0x${val.toString(16).toUpperCase()}`;
             instrWidth += 1;
           }
             break;
           case InstrParamType.I16: {
             const val = view.getUint16(cursor + instrWidth, true);
-            asm += val;
+            asm += `0x${val.toString(16).toUpperCase()}`;
             instrWidth += 2;
           }
             break;
           case InstrParamType.I32: {
             const val = view.getUint32(cursor + instrWidth, true);
-            asm += val;
+            asm += `0x${val.toString(16).toUpperCase()}`;
             instrWidth += 4;
           }
             break;
           case InstrParamType.I64: {
             const val = view.getBigUint64(cursor + instrWidth, true);
-            asm += val;
+            asm += `0x${val.toString(16).toUpperCase()}`;
             instrWidth += 8;
           }
             break;
@@ -235,7 +235,7 @@ export class Disassembler {
             break;
           case InstrParamType.ADDRESS: {
             const val = view.getBigUint64(cursor + instrWidth, true);
-            asm += val;
+            asm += `0x${val.toString(16).toUpperCase()}`;
             instrWidth += 8;
           }
             break;

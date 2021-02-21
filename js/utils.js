@@ -122,16 +122,16 @@ export function regOffsetToStr(view, index) {
       roStr = `[${regToStr(iRegA)}]`;
       break;
     case 0x2F:
-      roStr = `[${regToStr(iRegA)} + ${imm32}]`;
+      roStr = `[${regToStr(iRegA)} + 0x${imm32.toString(16).toUpperCase()}]`;
       break;
     case 0xAF:
-      roStr = `[${regToStr(iRegA)} - ${imm32}]`;
+      roStr = `[${regToStr(iRegA)} - 0x${imm32.toString(16).toUpperCase()}]`;
       break;
     case 0x1F:
-      roStr = `[${regToStr(iRegA)} + ${regToStr(iRegB)} * ${imm16}]`;
+      roStr = `[${regToStr(iRegA)} + ${regToStr(iRegB)} * 0x${imm16.toString(16).toUpperCase()}]`;
       break;
     case 0x8F:
-      roStr = `[${regToStr(iRegA)} - ${regToStr(iRegB)} * ${imm16}]`;
+      roStr = `[${regToStr(iRegA)} - ${regToStr(iRegB)} * 0x${imm16.toString(16).toUpperCase()}]`;
       break;
     default:
       console.error(`Unknown register offset layout ${layout} at address 0x${index.toString(16)}`);
@@ -173,13 +173,13 @@ export function translateRuntimeError(err) {
     case RuntimeError.INVALID_READ:
       errMsg = 'invalid read from given address';
       break;
-    case RuntimeError.INVALID_SOURCRuntimeError.REG:
+    case RuntimeError.INVALID_SOURCE_REG:
       errMsg = 'invalid source register';
       break;
     case RuntimeError.INVALID_WRITE:
       errMsg = 'invalid write to given address';
       break;
-    case RuntimeError.INVALID_SOURCRuntimeError.REG_OFFSET:
+    case RuntimeError.INVALID_SOURCE_REG_OFFSET:
       errMsg = 'invalid source register offset';
       break;
     case RuntimeError.INVALID_DEST_REG_OFFSET:
