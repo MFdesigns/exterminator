@@ -264,7 +264,11 @@ export class DebugModel {
       }
         break;
       case DebugOperation.DBG_OPEN_DBG_SESS:
-        this.DbgView.setUIState(UIState.OPEN_SESS);
+        if (this.SourceFile) {
+          this.DbgView.setUIState(UIState.FILE_SELECTED);
+        } else {
+          this.DbgView.setUIState(UIState.OPEN_SESS);
+        }
         this.DbgView.debugConsole('Successfully opened debug session');
         this.SessOpen = true;
         break;
