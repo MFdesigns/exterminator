@@ -140,14 +140,13 @@ export class DebugModel {
    * Tries to open a debug session until successful
    */
   async openSession() {
-    console.log('test');
     if (!this.SessOpen) {
       this.DbgView.debugConsole('Trying to open debug session...');
       try {
         const op = await this.sendOperation(DebugOperation.DBG_OPEN_DBG_SESS, null);
         this.handleResponse(op);
       } catch (err) {
-        console.log(err);
+        console.error(err);
       }
 
       setTimeout(() => {

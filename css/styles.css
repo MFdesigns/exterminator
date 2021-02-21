@@ -8,11 +8,6 @@
     font-family: 'Aileron';
     font-weight: bold;
 }
-@font-face {
-    src: url('../res/aileron_black.otf');
-    font-family: 'Aileron';
-    font-weight: 900;
-}
 
 @font-face {
     src: url('../res/jet_brains_mono_nl_regular.ttf');
@@ -100,7 +95,7 @@ header {
 
 .header__title {
     font-size: 18px;
-    font-weight: bolder;
+    font-weight: bold;
     color: white;
     padding: 10px;
     opacity: 0.8;
@@ -192,7 +187,7 @@ main {
 
 .section__title {
     font-size: 18px;
-    font-weight: bolder;
+    font-weight: bold;
     margin: 0 0 10px 0;
 }
 
