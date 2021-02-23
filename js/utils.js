@@ -26,6 +26,10 @@ const RuntimeError = {
   E_INVALID_SRC_REG_OFFSET: 0xE00A,
   E_INVALID_DEST_REG_OFFSET: 0xE00B,
   E_SYSCALL_UNKNOWN: 0xE00C,
+  E_SYSCALL_FAILURE: 0xE00D,
+  E_DIVISON_ZERO: 0xE00E,
+  E_INVALID_STACK_OP: 0xE00F,
+  E_INVALID_BASE_PTR: 0xE010,
 }
 
 /**
@@ -144,7 +148,7 @@ export function regOffsetToStr(view, index) {
  * @return {String} error message
  */
 export function translateRuntimeError(err) {
-  let errMsg = '';
+  let errMsg = `(0x${err.toString(16).toUpperCase().padStart(8, '0')}) `;
   switch (err) {
     case RuntimeError.INVALID_HEADER:
       errMsg = 'invalid header';
@@ -199,6 +203,21 @@ export function translateRuntimeError(err) {
       break;
     case RuntimeError.UNKNOWN_OP_CODE:
       errMsg = 'unknown opcode';
+      break;
+    case RuntimeError.E_SYSCALL_FAILURE:
+      errMsg = 'could not perform system call';
+      break;
+    case RuntimeError.E_DIVISON_ZERO:
+      errMsg = 'divison by zero';
+      break;
+    case RuntimeError.E_UNKNOWN_OP_CODE:
+      errMsg = 'unknown opcode';
+      break;
+    case RuntimeError.E_INVALID_BASE_PTR:
+      errMsg = 'invalid base pointer address';
+      break;
+    default:
+      errMsg = 'Unknown error code';
       break;
   }
   return errMsg;

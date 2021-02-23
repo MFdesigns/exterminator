@@ -94,6 +94,8 @@ export class DebugModel {
    * @param {File} file
    */
   async setSource(file) {
+    this.Breakpoints = [];
+
     const fileBuffer = await file.arrayBuffer();
     this.SourceFile = new SourceFile(new Uint8Array(fileBuffer));
 
@@ -237,7 +239,7 @@ export class DebugModel {
         const errorCode = resView.getUint8(9);
         // Runtime error
         if (errorCode === 0x03) {
-          const runtimeErr = resView.getUint8(10);
+          const runtimeErr = resView.getUint32(10, true);
           this.reportRuntimeError(runtimeErr);
         } else {
           const errorMsg = ErrorCodes[errorCode];

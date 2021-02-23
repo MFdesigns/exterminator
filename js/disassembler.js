@@ -71,6 +71,7 @@ export class Disassembler {
    */
   setSource(src) {
     this.SourceFile = src;
+    this.Disasm = [];
   }
 
   /**

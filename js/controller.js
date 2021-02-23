@@ -44,6 +44,7 @@ export class DebugController {
   uploadFile(event, ctrl) {
     const file = ctrl.DbgView.Elem.fileUploadBtn.files[0];
     if (file) {
+      ctrl.DbgView.Elem.fileUploadBtn.value = '';
       ctrl.Model.setSource(file);
     }
   }

@@ -33,7 +33,7 @@ class SectionName {
 export class SourceFile {
   /**
    * Constructs a new SourceFile
-   * @param {File} file
+   * @param {Uint8Array} file
    */
   constructor(file) {
     this.FileBuffer = file;
