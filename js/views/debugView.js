@@ -83,9 +83,9 @@ export class DebugView {
         }
         break;
       case UIState.APP_RUNNING:
-        this.Elem.closeDbgSessBtn.disabled = false;
+        this.Elem.closeDbgSessBtn.disabled = true;
         this.Elem.openDbgSessBtn.disabled = true;
-        this.Elem.fileUploadBtn.disabled = false;
+        this.Elem.fileUploadBtn.disabled = true;
         this.Elem.startBtn.disabled = true;
         this.Elem.stopBtn.disabled = false;
         this.Elem.nextBtn.disabled = false;
