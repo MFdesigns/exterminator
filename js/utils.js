@@ -131,7 +131,7 @@ export function regOffsetToStr(view, index) {
     case 0x1F:
       roStr = `[${regToStr(iRegA)} + ${regToStr(iRegB)} * 0x${imm16.toString(16).toUpperCase()}]`;
       break;
-    case 0x8F:
+    case 0x9F:
       roStr = `[${regToStr(iRegA)} - ${regToStr(iRegB)} * 0x${imm16.toString(16).toUpperCase()}]`;
       break;
     default:
